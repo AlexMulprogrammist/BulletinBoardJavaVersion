@@ -1,14 +1,61 @@
 package com.mul_alexautoprogramm.bulletinboardjavaversion;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.material.navigation.NavigationView;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private NavigationView nav_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        init();
+    }
+
+    private void init(){
+
+        nav_view = findViewById(R.id.nav_view);
+        nav_view.setNavigationItemSelectedListener(this);
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.id_my_ads:
+                Toast.makeText(this, "Preset id_my_ads", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.id_cars:
+                Toast.makeText(this, "Preset id_cars", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.id_pc_ads:
+                Toast.makeText(this, "Preset pc", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.id_smartphone_ads:
+                Toast.makeText(this, "Preset id_smartphone", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.id_appliances_ads:
+                Toast.makeText(this, "Preset id_appliances", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.id_sign_up:
+                Toast.makeText(this, "Preset id_sign_up", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.id_sign_in:
+                Toast.makeText(this, "Preset id_sign_in", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.id_sign_out:
+                Toast.makeText(this, "Preset id_sign_out", Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+            return true;
     }
 }
