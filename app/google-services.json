@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "763629219651",
+    "firebase_url": "https://bulletinboardjava-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "bulletinboardjava",
+    "storage_bucket": "bulletinboardjava.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763629219651:android:5c520dc632d4a161f409f6",
+        "android_client_info": {
+          "package_name": "com.mul_alexautoprogramm.bulletinboardjavaversion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763629219651-87lvima00ei2mk9ivitc5ml3ieolgeaq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLFc-YlQsN7s22iwo0JrqwIC-nAPpR1t4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763629219651-87lvima00ei2mk9ivitc5ml3ieolgeaq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
