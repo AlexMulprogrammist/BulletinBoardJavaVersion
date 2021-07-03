@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">BulletinBoardJavaVersion</string>
+
+
+    <!--drawer_main_menu-->
+    <string name="my_ads">My announcements</string>
+    <string name="cars_ads">Cars</string>
+    <string name="pc_ads">Personal computers</string>
+    <string name="smartphone_ads">Smartphone</string>
+    <string name="appliances_ads">Appliances</string>
+
+    <string name="sign_up">Registration</string>
+    <string name="sign_in">Login to your account</string>
+    <string name="sign_out">Exit</string>
+
+
+
 </resources>
