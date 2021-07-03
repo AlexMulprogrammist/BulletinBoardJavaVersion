@@ -14,6 +14,14 @@
     <string name="sign_out">Exit</string>
     <string name="account">Account</string>
 
+    <!--alert_sign_up_layout-->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_up_button">Register</string>
+    <string name="sign_in_button">To come in</string>
+
+
+
 
 
 </resources>
