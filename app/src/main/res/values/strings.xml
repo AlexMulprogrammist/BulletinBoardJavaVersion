@@ -20,6 +20,8 @@
     <string name="sign_up_button">Register</string>
     <string name="sign_in_button">To come in</string>
 
+    <!--User LoginIn or SignUp -->
+    <string name="signInOrSignUp">Login or register</string>
 
 
 

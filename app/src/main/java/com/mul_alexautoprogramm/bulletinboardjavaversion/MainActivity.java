@@ -26,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private NavigationView nav_view;
     private FirebaseAuth mAuth;
+    private TextView userEmailTitleHeader;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +40,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
+        getUserData();
+
+    }
+
+    private void getUserData(){
+
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            userEmailTitleHeader.setText(currentUser.getEmail());
+        }else{
+            userEmailTitleHeader.setText(R.string.signInOrSignUp);
+        }
 
     }
 
     private void init(){
-        mAuth = FirebaseAuth.getInstance();
+
         nav_view = findViewById(R.id.nav_view);
         nav_view.setNavigationItemSelectedListener(this);
+        userEmailTitleHeader = nav_view.getHeaderView(0).findViewById(R.id.tvEmail);
+        mAuth = FirebaseAuth.getInstance();
         //test FireBase
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("message");
@@ -112,14 +127,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
                 if(index == 0){
                     signUp(edEmail.getText().toString(), edPassword.getText().toString());
+
                 }else{
                     signIn(edEmail.getText().toString(), edPassword.getText().toString());
+
                 }
+                dialog.dismiss();
             }
         });
 
-        AlertDialog dialog = dialogBuilder.create();
+        dialog = dialogBuilder.create();
         dialog.show();
+
 
     }
     //signUp
@@ -132,12 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-
-                                FirebaseUser user = mAuth.getCurrentUser();
-                               if(user != null) {
-                                   Toast.makeText(MainActivity.this, "Sign Up Done. User email: " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                                   Log.d("MyLogMain", "signInWithCustomToken:success" + user.getEmail());
-                               }
+                                getUserData();
 
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -163,10 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                Log.d("MyLogMain", "signInWithCustomToken:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                if (user != null)
-                                    Toast.makeText(getApplicationContext(), "SignIn done. User: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                               getUserData();
 
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -184,6 +195,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //signOut
     private void signOut(){
         mAuth.signOut();
+        getUserData();
+
     }
 
 }
