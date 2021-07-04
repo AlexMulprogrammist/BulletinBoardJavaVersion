@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 signUpInDialogInflate(R.string.sign_in, R.string.sign_in_button, 1);
                 break;
             case R.id.id_sign_out:
+                signOut();
                 Toast.makeText(this, "Preset id_sign_out", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(index == 0){
                     signUp(edEmail.getText().toString(), edPassword.getText().toString());
                 }else{
-                    //signIn
+                    signIn(edEmail.getText().toString(), edPassword.getText().toString());
                 }
             }
         });
@@ -131,8 +132,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                Log.d("MyLogMain", "signInWithCustomToken:success");
+
                                 FirebaseUser user = mAuth.getCurrentUser();
+                               if(user != null) {
+                                   Toast.makeText(MainActivity.this, "Sign Up Done. User email: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                                   Log.d("MyLogMain", "signInWithCustomToken:success" + user.getEmail());
+                               }
 
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -147,10 +152,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "Email or password empty", Toast.LENGTH_SHORT).show();
         }
     }
-
+    //signIn
     private void  signIn(String email, String password){
+        if(!email.equals("") && !password.equals("")) {
 
+
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("MyLogMain", "signInWithCustomToken:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                if (user != null)
+                                    Toast.makeText(getApplicationContext(), "SignIn done. User: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w("MyLogMain", "signInWithCustomToken:failure", task.getException());
+                                Toast.makeText(getApplicationContext(), "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                    });
+        }else {
+            Toast.makeText(this, "Email or password empty", Toast.LENGTH_SHORT).show();
+        }
     }
-
+    //signOut
+    private void signOut(){
+        mAuth.signOut();
+    }
 
 }
