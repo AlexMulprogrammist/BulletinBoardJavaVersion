@@ -23,7 +23,11 @@
     <!--User LoginIn or SignUp -->
     <string name="signInOrSignUp">Login or register</string>
 
-
+    <!--Edit Activity -->
+    <string name="edit_act_title">Title Ad</string>
+    <string name="edit_act_price">Price</string>
+    <string name="edit_act_description">Description</string>
+    <string name="edit_tel_numb">Telephone number</string>
 
 
 </resources>
