@@ -3,6 +3,7 @@ package com.mul_alexautoprogramm.bulletinboardjavaversion;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private NavigationView nav_view;
+    private DrawerLayout drawerLayout;
     private FirebaseAuth mAuth;
     private TextView userEmailTitleHeader;
     private AlertDialog dialog;
@@ -58,8 +60,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void init(){
 
         nav_view = findViewById(R.id.nav_view);
+        drawerLayout = findViewById(R.id.drawer_layout);
         nav_view.setNavigationItemSelectedListener(this);
         userEmailTitleHeader = nav_view.getHeaderView(0).findViewById(R.id.tvEmail);
+
         mAuth = FirebaseAuth.getInstance();
         //test FireBase
         FirebaseDatabase database = FirebaseDatabase.getInstance();
