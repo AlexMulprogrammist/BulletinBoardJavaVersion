@@ -24,13 +24,14 @@
         android:id="@+id/edTitleAd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/edit_act_title"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="@+id/imItem"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/imItem"
-        app:layout_constraintTop_toBottomOf="@+id/imItem" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <EditText
         android:id="@+id/edPrice"
@@ -72,4 +73,27 @@
         app:layout_constraintEnd_toEndOf="@+id/edTelephoneNumber"
         app:layout_constraintStart_toStartOf="@+id/edTelephoneNumber"
         app:layout_constraintTop_toBottomOf="@+id/edTelephoneNumber" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@android:drawable/spinner_background"
+        app:layout_constraintEnd_toEndOf="@+id/imItem"
+        app:layout_constraintStart_toStartOf="@+id/imItem"
+        app:layout_constraintTop_toBottomOf="@+id/imItem" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:onClick="onClickSavePost"
+        app:backgroundTint="@color/teal_700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_save" />
 </androidx.constraintlayout.widget.ConstraintLayout>

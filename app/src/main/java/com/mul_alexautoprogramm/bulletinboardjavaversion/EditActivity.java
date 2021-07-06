@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +30,7 @@ public class EditActivity extends AppCompatActivity {
     private ImageView imItem;
     private StorageReference myStorageRef;
     private Uri uploadUri;
+    private Spinner spinner;
 
 
     @Override
@@ -42,6 +45,11 @@ public class EditActivity extends AppCompatActivity {
 
         imItem = findViewById(R.id.imItem);
         myStorageRef = FirebaseStorage.getInstance().getReference("Images");
+        spinner = findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this,R.array.category_spinner, android.R.layout.simple_spinner_item);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+
     }
 
     @Override
@@ -91,6 +99,12 @@ public class EditActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+    //OnClick Save button in Edit Act
+    public void onClickSavePost(View view){
+
+
 
     }
 

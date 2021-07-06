@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category_spinner">
+        <item>Cars</item>
+        <item>Personal computers</item>
+        <item>Smartphone</item>
+        <item>Appliances</item>
+    </string-array>
+</resources>
