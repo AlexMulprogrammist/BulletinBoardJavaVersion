@@ -7,6 +7,25 @@ public class NewPost {
     private String tel_numb;
     private String desc;
     private String key;
+    private String uid;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    private String time;
 
     public String getImId() {
         return imId;

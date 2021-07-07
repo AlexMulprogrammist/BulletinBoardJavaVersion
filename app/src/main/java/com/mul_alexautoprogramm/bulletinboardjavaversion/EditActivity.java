@@ -149,9 +149,11 @@ public class EditActivity extends AppCompatActivity {
             post.setTel_numb(edTelNumb.getText().toString());
             post.setDesc(edDescription.getText().toString());
             post.setKey(key);
+            post.setTime(String.valueOf(System.nanoTime()));
+            post.setUid(myAut.getUid());
 
             if(key != null) {
-                databaseReference.child(myAut.getUid()).child(key).setValue(post);
+                databaseReference.child(key).child("Ads").setValue(post);
             }
         }
 

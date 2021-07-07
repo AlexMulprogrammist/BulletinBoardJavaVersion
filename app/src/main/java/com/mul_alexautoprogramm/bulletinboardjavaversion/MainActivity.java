@@ -6,6 +6,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +30,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.PostAdapterRcView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private NavigationView nav_view;
@@ -36,7 +42,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView userEmailTitleHeader;
     private AlertDialog dialog;
     private Toolbar toolbar;
-
+    private PostAdapterRcView.onItemClickCustom onItemClickCustom;
+    private RecyclerView rcView;
+    private PostAdapterRcView postAdapterRcView;
+    private DbManager dbManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         init();
 
     }
+
+
 
     @Override
     protected void onStart() {
@@ -74,6 +85,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void init(){
+        setOnItemClickCustom();
+        rcView = findViewById(R.id.rcView);
+        rcView.setLayoutManager(new LinearLayoutManager(this));
+        //test!!!
+        List<NewPost> arrayTestPost = new ArrayList<>();
+        NewPost newPost = new NewPost();
+
+        newPost.setTitle("Mercedes");
+        newPost.setPrice("100");
+        newPost.setTel_numb("222333444");
+        newPost.setDesc("This is mercedes TEST");
+
+        arrayTestPost.add(newPost);
+        arrayTestPost.add(newPost);
+        arrayTestPost.add(newPost);
+        arrayTestPost.add(newPost);
+        arrayTestPost.add(newPost);
+        arrayTestPost.add(newPost);
+        arrayTestPost.add(newPost);
+        arrayTestPost.add(newPost);
+
+        dbManager = new DbManager();
+        dbManager.getDataFromDb("Personal computers");
+
+        postAdapterRcView = new PostAdapterRcView(arrayTestPost,this, onItemClickCustom);
+        rcView.setAdapter(postAdapterRcView);
 
         nav_view = findViewById(R.id.nav_view);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -90,6 +127,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mAuth = FirebaseAuth.getInstance();
 
 
+
+
+    }
+
+    private void setOnItemClickCustom(){
+        onItemClickCustom = new PostAdapterRcView.onItemClickCustom() {
+            @Override
+            public void onItemSelected(int position) {
+
+            }
+        };
     }
 
 
