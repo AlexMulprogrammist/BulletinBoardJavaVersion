@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mul_alexautoprogramm.bulletinboardjavaversion.NewPost;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,12 +62,15 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
             tvItemPrice = itemView.findViewById(R.id.tvItemPrice);
             tvItemTelNumb = itemView.findViewById(R.id.tvItemTelNumb);
             tvItemDescription = itemView.findViewById(R.id.tvItemDescription);
+            imItemView = itemView.findViewById(R.id.imAdsItem);
             itemView.setOnClickListener(this);
             this.onItemClickCustom = onItemClickCustom;
 
         }
 
         public void setData(NewPost newPost){
+
+            Picasso.get().load(newPost.getImId()).into(imItemView);
 
             tvItemTitle.setText(newPost.getTitle());
             tvItemPrice.setText(newPost.getPrice());
@@ -90,4 +94,13 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
         void onItemSelected(int position);
 
     }
+
+    public void updateAdapter(List<NewPost> listData){
+
+        arrayListPost.clear();
+        arrayListPost.addAll(listData);
+        notifyDataSetChanged();
+
+    }
+
 }

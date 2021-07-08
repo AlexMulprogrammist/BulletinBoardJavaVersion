@@ -30,9 +30,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.DataSender;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.PostAdapterRcView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView rcView;
     private PostAdapterRcView postAdapterRcView;
     private DbManager dbManager;
+    private DataSender dataSender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,27 +92,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rcView = findViewById(R.id.rcView);
         rcView.setLayoutManager(new LinearLayoutManager(this));
         //test!!!
-        List<NewPost> arrayTestPost = new ArrayList<>();
-        NewPost newPost = new NewPost();
-
-        newPost.setTitle("Mercedes");
-        newPost.setPrice("100");
-        newPost.setTel_numb("222333444");
-        newPost.setDesc("This is mercedes TEST");
-
-        arrayTestPost.add(newPost);
-        arrayTestPost.add(newPost);
-        arrayTestPost.add(newPost);
-        arrayTestPost.add(newPost);
-        arrayTestPost.add(newPost);
-        arrayTestPost.add(newPost);
-        arrayTestPost.add(newPost);
-        arrayTestPost.add(newPost);
-
-        dbManager = new DbManager();
+        List<NewPost> arrayPost = new ArrayList<>();
+        getDataDB();
+        dbManager = new DbManager(dataSender);
         dbManager.getDataFromDb("Personal computers");
-
-        postAdapterRcView = new PostAdapterRcView(arrayTestPost,this, onItemClickCustom);
+        postAdapterRcView = new PostAdapterRcView(arrayPost,this, onItemClickCustom);
         rcView.setAdapter(postAdapterRcView);
 
         nav_view = findViewById(R.id.nav_view);
@@ -128,6 +115,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
+    }
+
+    private void getDataDB(){
+
+        dataSender = new DataSender() {
+            @Override
+            public void onDataRecived(List<NewPost> newPostList) {
+
+                Collections.reverse(newPostList);
+                postAdapterRcView.updateAdapter(newPostList);
+
+            }
+        };
 
     }
 

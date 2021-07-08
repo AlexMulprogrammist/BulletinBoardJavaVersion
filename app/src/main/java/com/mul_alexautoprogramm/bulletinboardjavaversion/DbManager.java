@@ -11,41 +11,46 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.DataSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DbManager {
+    private Query mQuery;
+    private List<NewPost> newPostList;
+    private DataSender dataSender;
 
-    public void getDataFromDb(String path){
+    public DbManager(DataSender dataSender) {
+        this.dataSender = dataSender;
+        newPostList = new ArrayList<>();
+
+    }
+
+    public void getDataFromDb(String path) {
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference(path);
         //Query orders our announcements by time
-        Query mQuery = databaseReference.orderByChild("Ads/time");
-        mQuery.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+        mQuery = databaseReference.orderByChild("Ads/time");
+        readDataUpdate();
 
+    }
+
+    public void readDataUpdate(){
+
+        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(newPostList.size() > 0) newPostList.clear();
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()){
 
-                    NewPost newPost = dataSnapshot.getValue(NewPost.class);
-                    Log.d("MyLog", "Title: " + newPost.getTitle());
+                    NewPost newPost = dataSnapshot.child("Ads").getValue(NewPost.class);
+                    newPostList.add(newPost);
 
                 }
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                dataSender.onDataRecived(newPostList);
             }
 
             @Override
@@ -53,6 +58,7 @@ public class DbManager {
 
             }
         });
+
     }
 
 }
