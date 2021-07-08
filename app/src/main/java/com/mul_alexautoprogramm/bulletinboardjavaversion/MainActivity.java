@@ -147,31 +147,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.id_my_ads:
-                Toast.makeText(this, "Preset id_my_ads", Toast.LENGTH_SHORT).show();
+                dbManager.getMyAdsDataFromDb(mAuth.getUid());
                 break;
             case R.id.id_cars:
-                Toast.makeText(this, "Preset id_cars", Toast.LENGTH_SHORT).show();
+                dbManager.getDataFromDb("Cars");
                 break;
             case R.id.id_pc_ads:
-                Toast.makeText(this, "Preset pc", Toast.LENGTH_SHORT).show();
+                dbManager.getDataFromDb("Personal computers");
                 break;
             case R.id.id_smartphone_ads:
-                Toast.makeText(this, "Preset id_smartphone", Toast.LENGTH_SHORT).show();
+                dbManager.getDataFromDb("Smartphone");
                 break;
             case R.id.id_appliances_ads:
-                Toast.makeText(this, "Preset id_appliances", Toast.LENGTH_SHORT).show();
+                dbManager.getDataFromDb("Appliances");
                 break;
             case R.id.id_sign_up:
-                Toast.makeText(this, "Preset id_sign_up", Toast.LENGTH_SHORT).show();
+
                 signUpInDialogInflate(R.string.sign_up, R.string.sign_up_button, 0);
                 break;
             case R.id.id_sign_in:
-                Toast.makeText(this, "Preset id_sign_in", Toast.LENGTH_SHORT).show();
+
                 signUpInDialogInflate(R.string.sign_in, R.string.sign_in_button, 1);
                 break;
             case R.id.id_sign_out:
                 signOut();
-                Toast.makeText(this, "Preset id_sign_out", Toast.LENGTH_SHORT).show();
+
                 break;
         }
 
