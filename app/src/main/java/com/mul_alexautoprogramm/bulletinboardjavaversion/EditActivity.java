@@ -151,6 +151,7 @@ public class EditActivity extends AppCompatActivity {
             post.setKey(key);
             post.setTime(String.valueOf(System.nanoTime()));
             post.setUid(myAut.getUid());
+            post.setCategory(spinner.getSelectedItem().toString());
 
             if(key != null) {
                 databaseReference.child(key).child("Ads").setValue(post);

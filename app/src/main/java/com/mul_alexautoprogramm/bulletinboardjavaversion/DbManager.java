@@ -25,6 +25,14 @@ public class DbManager {
     private int categoryAdsCounter = 0;
     private String[] myCategoryAds = {"Cars", "Personal computers", "Smartphone", "Appliances"};
 
+    public void deleteItem(NewPost newPost){
+
+        DatabaseReference databaseReference = firebaseDatabase.getReference(newPost.getCategory());
+        databaseReference.child(newPost.getKey()).removeValue();
+
+
+    }
+
     public DbManager(DataSender dataSender) {
         this.dataSender = dataSender;
         newPostList = new ArrayList<>();

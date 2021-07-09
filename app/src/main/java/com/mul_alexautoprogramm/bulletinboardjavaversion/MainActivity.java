@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private PostAdapterRcView postAdapterRcView;
     private DbManager dbManager;
     private DataSender dataSender;
+    public static String MAUTH = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +82,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             userEmailTitleHeader.setText(currentUser.getEmail());
+            MAUTH = mAuth.getUid();
         }else{
             userEmailTitleHeader.setText(R.string.signInOrSignUp);
+            MAUTH = "";
         }
 
     }
@@ -93,10 +96,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rcView.setLayoutManager(new LinearLayoutManager(this));
         //test!!!
         List<NewPost> arrayPost = new ArrayList<>();
+        postAdapterRcView = new PostAdapterRcView(arrayPost,this, onItemClickCustom);
         getDataDB();
         dbManager = new DbManager(dataSender);
         dbManager.getDataFromDb("Personal computers");
-        postAdapterRcView = new PostAdapterRcView(arrayPost,this, onItemClickCustom);
+        postAdapterRcView.setDbManager(dbManager);
+
         rcView.setAdapter(postAdapterRcView);
 
         nav_view = findViewById(R.id.nav_view);

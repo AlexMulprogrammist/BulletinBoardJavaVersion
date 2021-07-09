@@ -9,6 +9,16 @@ public class NewPost {
     private String key;
     private String uid;
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    private String category;
+
     public String getUid() {
         return uid;
     }

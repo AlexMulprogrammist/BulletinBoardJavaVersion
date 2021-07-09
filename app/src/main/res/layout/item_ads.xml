@@ -11,13 +11,13 @@
         android:id="@+id/tvItemTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="TextView"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tvItemPrice"
+        app:layout_constraintStart_toStartOf="@+id/tvItemPrice"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -28,7 +28,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvItemTitle"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -37,17 +37,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:gravity="center_horizontal"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imAdsItem"
-        app:layout_constraintTop_toTopOf="@+id/imAdsItem" />
+        app:layout_constraintTop_toBottomOf="@+id/tvItemTitle" />
 
     <TextView
         android:id="@+id/tvItemTelNumb"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="@+id/tvItemPrice"
         app:layout_constraintHorizontal_bias="0.0"
@@ -57,11 +59,40 @@
     <TextView
         android:id="@+id/tvItemDescription"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/imAdsItem"
         app:layout_constraintEnd_toEndOf="@+id/tvItemPrice"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tvItemPrice"
         app:layout_constraintTop_toBottomOf="@+id/tvItemTelNumb" />
+
+    <LinearLayout
+        android:id="@+id/editLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tvItemDescription"
+        app:layout_constraintTop_toBottomOf="@+id/tvItemDescription"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageButton
+            android:id="@+id/imEditItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_editt" />
+
+        <ImageButton
+            android:id="@+id/imDeleteItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_deletee" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
