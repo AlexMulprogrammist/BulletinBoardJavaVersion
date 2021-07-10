@@ -3,6 +3,7 @@ package com.mul_alexautoprogramm.bulletinboardjavaversion.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mul_alexautoprogramm.bulletinboardjavaversion.DbManager;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.EditActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.MainActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.NewPost;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -131,7 +134,18 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
                 @Override
                 public void onClick(View v) {
 
-                    Toast.makeText(context, "EditButtonItem", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(context, EditActivity.class);
+                    i.putExtra(MyConstance.IMAGE_ID, newPost.getImId());
+                    i.putExtra(MyConstance.TITLE, newPost.getTitle());
+                    i.putExtra(MyConstance.PRICE, newPost.getPrice());
+                    i.putExtra(MyConstance.TEL_NUMB, newPost.getTel_numb());
+                    i.putExtra(MyConstance.DESC, newPost.getDesc());
+                    i.putExtra(MyConstance.KEY, newPost.getKey());
+                    i.putExtra(MyConstance.UID, newPost.getUid());
+                    i.putExtra(MyConstance.TIME, newPost.getTime());
+                    i.putExtra(MyConstance.CATEGORY, newPost.getCategory());
+                    i.putExtra(MyConstance.EDIT_STATE, true);
+                    context.startActivity(i);
 
                 }
             });

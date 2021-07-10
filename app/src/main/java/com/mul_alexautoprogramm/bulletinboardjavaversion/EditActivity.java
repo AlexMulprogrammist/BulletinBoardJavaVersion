@@ -27,6 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 
@@ -38,6 +40,15 @@ public class EditActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private FirebaseAuth myAut;
     private EditText edTitle, edPrice,edTelNumb, edDescription;
+    private Boolean edit_state = false;
+    private String temp_category = "";
+    private String temp_uid = "";
+    private String temp_time = "";
+    private String temp_key = "";
+    private String temp_image_url = "";
+    private Boolean is_image_update = false;
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +70,35 @@ public class EditActivity extends AppCompatActivity {
         edPrice  = findViewById(R.id.edPrice);
         edTelNumb  = findViewById(R.id.edTelephoneNumber);
         edDescription  = findViewById(R.id.edDescription);
+        getMyIntent();
+
+    }
+
+    private void getMyIntent(){
+
+        if(getIntent() != null){
+
+            Intent i = getIntent();
+            edit_state = i.getBooleanExtra(MyConstance.EDIT_STATE, false);
+            if(edit_state) setDataAds(i);
+
+
+        }
+
+    }
+
+    private void setDataAds(Intent i){
+
+        Picasso.get().load(i.getStringExtra(MyConstance.IMAGE_ID)).into(imItem);
+        edTelNumb.setText(i.getStringExtra(MyConstance.TEL_NUMB));
+        edTitle.setText(i.getStringExtra(MyConstance.TITLE));
+        edPrice.setText(i.getStringExtra(MyConstance.PRICE));
+        edDescription.setText(i.getStringExtra(MyConstance.DESC));
+        temp_category = i.getStringExtra(MyConstance.CATEGORY);
+        temp_uid = i.getStringExtra(MyConstance.UID);
+        temp_time = i.getStringExtra(MyConstance.TIME);
+        temp_key = i.getStringExtra(MyConstance.KEY);
+        temp_image_url = i.getStringExtra(MyConstance.IMAGE_ID);
 
     }
 
@@ -70,7 +110,8 @@ public class EditActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK){
                 //We got a picture and show it in our ImageView
                 imItem.setImageURI(data.getData());
-                upLoadImage();
+                is_image_update = true;
+
             }
 
         }
@@ -98,7 +139,8 @@ public class EditActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Uri> task) {
                 uploadUri = task.getResult();
                 assert uploadUri != null;
-                Toast.makeText(EditActivity.this, "Upload Done : " + uploadUri.toString(), Toast.LENGTH_SHORT).show();
+                savePost();
+                Toast.makeText(EditActivity.this, "Upload Done", Toast.LENGTH_SHORT).show();
             }
 
         }).addOnFailureListener(new OnFailureListener() {
@@ -111,11 +153,62 @@ public class EditActivity extends AppCompatActivity {
         });
 
     }
+
+    private void upLoadUpdateImage(){
+
+        Bitmap bitmap = ((BitmapDrawable)imItem.getDrawable()).getBitmap();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        byte[] byteArray = out.toByteArray();
+        final StorageReference myReference = FirebaseStorage.getInstance().getReferenceFromUrl(temp_image_url);
+        UploadTask uploadTask = myReference.putBytes(byteArray);
+        Task<Uri> task = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                return myReference.getDownloadUrl();
+
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                uploadUri = task.getResult();
+                assert uploadUri != null;
+                temp_image_url = uploadUri.toString();
+                updatePost();
+                Toast.makeText(EditActivity.this, "Upload Done", Toast.LENGTH_SHORT).show();
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+
+        });
+
+    }
+
     //OnClick Save button in Edit Act
     public void onClickSavePost(View view){
+        if(!edit_state) {
 
-        savePost();
+            upLoadImage();
 
+        }else{
+
+            if(is_image_update){
+
+                upLoadUpdateImage();
+
+            }else{
+
+                updatePost();
+
+            }
+        }
     }
 
     //onClickImage in EditAct
@@ -132,6 +225,26 @@ public class EditActivity extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, 10);
+
+    }
+    private void updatePost(){
+
+        databaseReference = FirebaseDatabase.getInstance().getReference(temp_category);
+        NewPost post = new NewPost();
+
+        post.setImId(temp_image_url);
+        post.setTitle(edTitle.getText().toString());
+        post.setPrice(edPrice.getText().toString());
+        post.setTel_numb(edTelNumb.getText().toString());
+        post.setDesc(edDescription.getText().toString());
+        post.setKey(temp_key);
+        post.setTime(temp_time);
+        post.setUid(temp_uid);
+        post.setCategory(temp_category);
+        databaseReference.child(temp_key).child("Ads").setValue(post);
+
+
+
 
     }
 
