@@ -50,16 +50,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DbManager dbManager;
     private DataSender dataSender;
     public static String MAUTH = "";
+    private String currentCategory = "Cars";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("MyLog","OnCreate");
         setContentView(R.layout.activity_main);
         init();
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("MyLog","OnResume");
+        if(currentCategory.equals("my_ads")){
 
+            dbManager.getMyAdsDataFromDb(mAuth.getUid());
+
+        }else{
+
+            dbManager.getDataFromDb(currentCategory);
+
+        }
+
+
+    }
 
     @Override
     protected void onStart() {
@@ -99,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         postAdapterRcView = new PostAdapterRcView(arrayPost,this, onItemClickCustom);
         getDataDB();
         dbManager = new DbManager(dataSender, this);
-        dbManager.getDataFromDb("Personal computers");
         postAdapterRcView.setDbManager(dbManager);
 
         rcView.setAdapter(postAdapterRcView);
@@ -152,18 +168,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.id_my_ads:
+                currentCategory = "my_ads";
                 dbManager.getMyAdsDataFromDb(mAuth.getUid());
                 break;
             case R.id.id_cars:
+                currentCategory = "Cars";
                 dbManager.getDataFromDb("Cars");
                 break;
             case R.id.id_pc_ads:
+                currentCategory = "Personal computers";
                 dbManager.getDataFromDb("Personal computers");
                 break;
             case R.id.id_smartphone_ads:
+                currentCategory = "Smartphone";
                 dbManager.getDataFromDb("Smartphone");
                 break;
             case R.id.id_appliances_ads:
+                currentCategory = "Appliances";
                 dbManager.getDataFromDb("Appliances");
                 break;
             case R.id.id_sign_up:
