@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,10 +20,10 @@ import com.mul_alexautoprogramm.bulletinboardjavaversion.EditActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.MainActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.NewPost;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.ShowLayoutActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.AdsViewHolder> {
@@ -162,7 +160,17 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
         @Override
         public void onClick(View v) {
 
-            dbManager.updateTotalViews(arrayListPost.get(getAdapterPosition()));
+            NewPost newPost = arrayListPost.get(getAdapterPosition());
+            dbManager.updateTotalViews(newPost);
+            Intent i = new Intent(context, ShowLayoutActivity.class);
+            i.putExtra(MyConstance.IMAGE_ID, newPost.getImId());
+            i.putExtra(MyConstance.TITLE, newPost.getTitle());
+            i.putExtra(MyConstance.PRICE, newPost.getPrice());
+            i.putExtra(MyConstance.TEL_NUMB, newPost.getTel_numb());
+            i.putExtra(MyConstance.DESC, newPost.getDesc());
+
+            context.startActivity(i);
+
             onItemClickCustom.onItemSelected(getAdapterPosition());
 
         }

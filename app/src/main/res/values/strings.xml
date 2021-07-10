@@ -33,7 +33,7 @@
     <string name="toggle_open">Open</string>
     <string name="toggle_close">Close</string>
 
-    <!--PostAdapter -->
+    <!--Main Activity -->
 
     <string name="delete_title">Delete ads</string>
     <string name="delete_message">Are you sure you want to delete the ad?</string>
@@ -44,6 +44,8 @@
     <string name="item_done_delete">Delete item done</string>
     <string name="error_item_delete">Image not delete ERROR</string>
 
-
+    <!--show_activity -->
+    <string name="show_price">Price:</string>
+    <string name="show_tel_number">Telephone number:</string>
 
 </resources>
