@@ -33,4 +33,16 @@
     <string name="toggle_open">Open</string>
     <string name="toggle_close">Close</string>
 
+    <!--PostAdapter -->
+
+    <string name="delete_title">Delete ads</string>
+    <string name="delete_message">Are you sure you want to delete the ad?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <!--DbManager -->
+    <string name="item_done_delete">Delete item done</string>
+    <string name="error_item_delete">Image not delete ERROR</string>
+
+
 </resources>

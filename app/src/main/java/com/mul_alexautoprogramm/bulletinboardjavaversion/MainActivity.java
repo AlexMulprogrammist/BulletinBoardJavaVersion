@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         List<NewPost> arrayPost = new ArrayList<>();
         postAdapterRcView = new PostAdapterRcView(arrayPost,this, onItemClickCustom);
         getDataDB();
-        dbManager = new DbManager(dataSender);
+        dbManager = new DbManager(dataSender, this);
         dbManager.getDataFromDb("Personal computers");
         postAdapterRcView.setDbManager(dbManager);
 

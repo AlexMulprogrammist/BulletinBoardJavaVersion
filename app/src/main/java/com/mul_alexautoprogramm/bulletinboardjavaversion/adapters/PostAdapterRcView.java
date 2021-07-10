@@ -1,6 +1,8 @@
 package com.mul_alexautoprogramm.bulletinboardjavaversion.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,6 +108,10 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
 
                 textDisc = newPost.getDesc().substring(0,50) + "...";
 
+            }else{
+
+                textDisc =  newPost.getDesc();
+
             }
             tvItemDescription.setText(textDisc);
 
@@ -114,10 +120,8 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
             imDeleteItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dbManager.deleteItem(newPost);
-                    arrayListPost.remove(getAdapterPosition());
-                    notifyItemRemoved(getAdapterPosition());
 
+                    deleteDialog(newPost, getAdapterPosition());
 
                 }
             });
@@ -143,6 +147,36 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
 
         }
     }
+
+    private void deleteDialog(final NewPost newPost, int position){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.delete_title);
+        builder.setMessage(R.string.delete_message);
+
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dbManager.deleteItem(newPost);
+                arrayListPost.remove(position);
+                notifyItemRemoved(position);
+
+            }
+        });
+
+
+
+        builder.show();
+
+    }
+
 
     public interface onItemClickCustom{
 
