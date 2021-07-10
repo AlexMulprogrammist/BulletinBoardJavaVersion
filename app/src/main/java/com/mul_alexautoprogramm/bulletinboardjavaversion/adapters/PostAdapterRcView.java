@@ -65,12 +65,13 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
     }
 
     public class AdsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView tvItemTitle,tvItemPrice,tvItemTelNumb,tvItemDescription;
+        private TextView tvItemTitle,tvItemPrice,tvItemTelNumb,tvItemDescription, tvTotal_views;
         private ImageView imItemView;
         private LinearLayout editLayout;
         private onItemClickCustom onItemClickCustom;
         private ImageButton imEditItem;
         private ImageButton imDeleteItem;
+
 
 
         public AdsViewHolder(@NonNull View itemView, onItemClickCustom onItemClickCustom) {
@@ -84,6 +85,8 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
 
             imDeleteItem = itemView.findViewById(R.id.imDeleteItem);
             imEditItem = itemView.findViewById(R.id.imEditItem);
+            tvTotal_views = itemView.findViewById(R.id.tvTotalView);
+
 
             itemView.setOnClickListener(this);
             this.onItemClickCustom = onItemClickCustom;
@@ -106,7 +109,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
             tvItemTitle.setText(newPost.getTitle());
             tvItemPrice.setText(newPost.getPrice());
             tvItemTelNumb.setText(newPost.getTel_numb());
-            String textDisc = null;
+            String textDisc;
             if(newPost.getDesc().length() > 50){
 
                 textDisc = newPost.getDesc().substring(0,50) + "...";
@@ -117,6 +120,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
 
             }
             tvItemDescription.setText(textDisc);
+            tvTotal_views.setText(newPost.getTotalViews());
 
 
             //DeleteButton/
@@ -145,6 +149,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
                     i.putExtra(MyConstance.TIME, newPost.getTime());
                     i.putExtra(MyConstance.CATEGORY, newPost.getCategory());
                     i.putExtra(MyConstance.EDIT_STATE, true);
+                    i.putExtra(MyConstance.TOTAL_VIEWS, newPost.getTotalViews());
                     context.startActivity(i);
 
                 }
@@ -157,6 +162,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
         @Override
         public void onClick(View v) {
 
+            dbManager.updateTotalViews(arrayListPost.get(getAdapterPosition()));
             onItemClickCustom.onItemSelected(getAdapterPosition());
 
         }

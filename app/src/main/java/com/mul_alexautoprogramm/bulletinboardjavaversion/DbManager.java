@@ -33,6 +33,23 @@ public class DbManager {
     private int categoryAdsCounter = 0;
     private String[] myCategoryAds = {"Cars", "Personal computers", "Smartphone", "Appliances"};
 
+    public void updateTotalViews(final NewPost newPost){
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(newPost.getCategory());
+        int total_views;
+        try {
+
+            total_views = Integer.parseInt(newPost.getTotalViews());
+
+
+
+        }catch (NumberFormatException e ){
+            total_views = 0;
+        }
+        total_views++;
+        databaseReference.child(newPost.getKey()).child("Ads/totalViews").setValue(String.valueOf(total_views));
+    }
+
     public void deleteItem(final NewPost newPost){
 
         StorageReference storageReference = firebaseStorage.getReferenceFromUrl(newPost.getImId());

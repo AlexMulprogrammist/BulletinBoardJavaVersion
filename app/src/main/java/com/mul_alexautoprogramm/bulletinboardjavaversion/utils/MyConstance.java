@@ -13,4 +13,5 @@ public class MyConstance {
     public static final String TIME = "time_" + MainActivity.class.getName();
     public static final String CATEGORY = "cat_" + MainActivity.class.getName();
     public static final String EDIT_STATE = "edit_state_" + MainActivity.class.getName();
+    public static final String TOTAL_VIEWS = "total_views" + MainActivity.class.getName();
 }

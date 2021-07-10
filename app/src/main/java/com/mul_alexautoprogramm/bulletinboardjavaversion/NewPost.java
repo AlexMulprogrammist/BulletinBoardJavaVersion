@@ -8,6 +8,15 @@ public class NewPost {
     private String desc;
     private String key;
     private String uid;
+    private String totalViews;
+
+    public String getTotalViews() {
+        return totalViews;
+    }
+
+    public void setTotalViews(String totalViews) {
+        this.totalViews = totalViews;
+    }
 
     public String getCategory() {
         return category;

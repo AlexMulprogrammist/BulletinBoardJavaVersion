@@ -47,6 +47,7 @@ public class EditActivity extends AppCompatActivity {
     private String temp_time = "";
     private String temp_key = "";
     private String temp_image_url = "";
+    private String temp_total_views = "";
     private Boolean is_image_update = false;
 
 
@@ -108,6 +109,7 @@ public class EditActivity extends AppCompatActivity {
         temp_time = i.getStringExtra(MyConstance.TIME);
         temp_key = i.getStringExtra(MyConstance.KEY);
         temp_image_url = i.getStringExtra(MyConstance.IMAGE_ID);
+        temp_total_views = i.getStringExtra(MyConstance.TOTAL_VIEWS);
 
     }
 
@@ -150,6 +152,7 @@ public class EditActivity extends AppCompatActivity {
                 assert uploadUri != null;
                 savePost();
                 Toast.makeText(EditActivity.this, "Upload Done", Toast.LENGTH_SHORT).show();
+                finish();
             }
 
         }).addOnFailureListener(new OnFailureListener() {
@@ -187,6 +190,7 @@ public class EditActivity extends AppCompatActivity {
                 temp_image_url = uploadUri.toString();
                 updatePost();
                 Toast.makeText(EditActivity.this, "Upload Done", Toast.LENGTH_SHORT).show();
+                finish();
             }
 
         }).addOnFailureListener(new OnFailureListener() {
@@ -218,7 +222,7 @@ public class EditActivity extends AppCompatActivity {
 
             }
         }
-        finish();
+
     }
 
     //onClickImage in EditAct
@@ -251,6 +255,7 @@ public class EditActivity extends AppCompatActivity {
         post.setTime(temp_time);
         post.setUid(temp_uid);
         post.setCategory(temp_category);
+        post.setTotalViews(temp_total_views);
         databaseReference.child(temp_key).child("Ads").setValue(post);
 
 
@@ -275,7 +280,7 @@ public class EditActivity extends AppCompatActivity {
             post.setTime(String.valueOf(System.nanoTime()));
             post.setUid(myAut.getUid());
             post.setCategory(spinner.getSelectedItem().toString());
-
+            post.setTotalViews("0");
             if(key != null) {
                 databaseReference.child(key).child("Ads").setValue(post);
             }
