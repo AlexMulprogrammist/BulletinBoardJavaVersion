@@ -22,6 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -53,12 +56,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static String MAUTH = "";
     private String currentCategory = "Cars";
     private final int EDIT_RESULT = 12;
+    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("MyLog","OnCreate");
         setContentView(R.layout.activity_main);
+        addAds();
         init();
 
     }
@@ -66,6 +71,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        if(adView != null){
+
+            adView.resume();
+
+        }
         Log.d("MyLog","OnResume");
         if(currentCategory.equals("my_ads")){
 
@@ -78,6 +88,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(adView != null){
+
+            adView.pause();
+
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(adView != null){
+
+            adView.destroy();
+
+        }
     }
 
     @Override
@@ -307,6 +338,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void signOut(){
         mAuth.signOut();
         getUserData();
+
+    }
+
+    //banner load
+    private void addAds(){
+
+        MobileAds.initialize(this);
+        adView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
     }
 
