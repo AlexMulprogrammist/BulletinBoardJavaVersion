@@ -1,6 +1,7 @@
 package com.mul_alexautoprogramm.bulletinboardjavaversion;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DataSender dataSender;
     public static String MAUTH = "";
     private String currentCategory = "Cars";
+    private final int EDIT_RESULT = 12;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +87,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == EDIT_RESULT && resultCode == RESULT_OK && data != null){
+
+            currentCategory = data.getStringExtra("cat");
+
+        }
+
+    }
+
     //OnClickEdit
     public void onClickEdit(View view){
 
         Intent i = new Intent(MainActivity.this, EditActivity.class);
-        startActivity(i);
+        startActivityForResult(i, EDIT_RESULT);
 
 
     }

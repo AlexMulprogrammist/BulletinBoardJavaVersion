@@ -28,6 +28,7 @@
     <string name="edit_act_price">Price</string>
     <string name="edit_act_description">Description</string>
     <string name="edit_tel_numb">Telephone number</string>
+    <string name="progress_bar">Loading..</string>
 
     <!--main content -->
     <string name="toggle_open">Open</string>

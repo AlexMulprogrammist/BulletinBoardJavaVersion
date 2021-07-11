@@ -1,5 +1,6 @@
 package com.mul_alexautoprogramm.bulletinboardjavaversion;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -49,6 +50,7 @@ public class EditActivity extends AppCompatActivity {
     private String temp_image_url = "";
     private String temp_total_views = "";
     private Boolean is_image_update = false;
+    private ProgressDialog progressDialog;
 
 
 
@@ -69,6 +71,9 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void init(){
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getResources().getString(R.string.progress_bar));
 
         imItem = findViewById(R.id.imItem);
         myStorageRef = FirebaseStorage.getInstance().getReference("Images");
@@ -206,6 +211,8 @@ public class EditActivity extends AppCompatActivity {
 
     //OnClick Save button in Edit Act
     public void onClickSavePost(View view){
+
+        progressDialog.show();
         if(!edit_state) {
 
             upLoadImage();
@@ -258,6 +265,8 @@ public class EditActivity extends AppCompatActivity {
         post.setTotalViews(temp_total_views);
         databaseReference.child(temp_key).child("Ads").setValue(post);
 
+        finish();
+
 
 
 
@@ -277,16 +286,24 @@ public class EditActivity extends AppCompatActivity {
             post.setTel_numb(edTelNumb.getText().toString());
             post.setDesc(edDescription.getText().toString());
             post.setKey(key);
-            post.setTime(String.valueOf(System.nanoTime()));
+            post.setTime(String.valueOf(System.currentTimeMillis()));
             post.setUid(myAut.getUid());
             post.setCategory(spinner.getSelectedItem().toString());
             post.setTotalViews("0");
             if(key != null) {
                 databaseReference.child(key).child("Ads").setValue(post);
             }
+            Intent i = new Intent();
+            i.putExtra("cat", spinner.getSelectedItem().toString());
+            setResult(RESULT_OK, i);
         }
 
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        progressDialog.dismiss();
+    }
 }
