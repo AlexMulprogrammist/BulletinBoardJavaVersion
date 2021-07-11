@@ -14,11 +14,14 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:onClick="onClickImageViewEditAct"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_logo_edit_act"
         tools:srcCompat="@drawable/ic_logo_edit_act" />
+
+
 
     <EditText
         android:id="@+id/edTitleAd"

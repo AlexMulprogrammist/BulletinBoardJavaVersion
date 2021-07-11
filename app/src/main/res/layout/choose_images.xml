@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".screens.ChooseImagesActivity">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:onClick="onClickDone"
+        app:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_done" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imMainChosse"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:drawable/editbox_background"
+            android:onClick="onClickMainImage"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_add_image"
+            tools:srcCompat="@drawable/ic_add_image" />
+
+        <ImageView
+            android:id="@+id/image2Choose"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:drawable/editbox_background"
+            android:onClick="onClickImage2Choose"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_add_image"
+            tools:srcCompat="@drawable/ic_add_image" />
+
+        <ImageView
+            android:id="@+id/image3Choose"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:drawable/editbox_background"
+            android:onClick="onClickImage3Choose"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_add_image"
+            tools:srcCompat="@drawable/ic_add_image" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

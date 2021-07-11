@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.ImageAdapterPage;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.screens.ChooseImagesActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
 import com.squareup.picasso.Picasso;
 
@@ -71,6 +74,10 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void init(){
+
+        /*ViewPager viewPager = findViewById(R.id.view_pager);
+        ImageAdapterPage imageAdapterPage = new ImageAdapterPage(this);
+        viewPager.setAdapter(imageAdapterPage);*/
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getResources().getString(R.string.progress_bar));
@@ -118,21 +125,7 @@ public class EditActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 10 && data != null && data.getData() != null){
 
-            if(resultCode == RESULT_OK){
-                //We got a picture and show it in our ImageView
-                imItem.setImageURI(data.getData());
-                is_image_update = true;
-
-            }
-
-        }
-
-    }
 
     private void upLoadImage(){
 
@@ -232,22 +225,33 @@ public class EditActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 15 && data != null){
+
+            if(resultCode == RESULT_OK){
+                //We got a picture and show it in our ImageView
+                Log.d("MyLog", "Uri main: " + data.getStringExtra("uri_main"));
+                Log.d("MyLog", "Uri_2: " + data.getStringExtra("uri_2"));
+                Log.d("MyLog", "Uri_3: " + data.getStringExtra("uri_3"));
+
+            }
+
+        }
+
+    }
+
+
     //onClickImage in EditAct
     public void onClickImageViewEditAct(View view){
 
-        getImage();
+        Intent i = new Intent(EditActivity.this, ChooseImagesActivity.class);
+        startActivityForResult(i,15);
 
     }
 
-    //Request to get a picture
-    private void getImage(){
 
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 10);
-
-    }
     private void updatePost(){
 
         databaseReference = FirebaseDatabase.getInstance().getReference(temp_category);
