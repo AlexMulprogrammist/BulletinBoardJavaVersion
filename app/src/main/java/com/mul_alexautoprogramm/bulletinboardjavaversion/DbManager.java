@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,6 +33,8 @@ public class DbManager {
     private FirebaseStorage firebaseStorage;
     private int categoryAdsCounter = 0;
     private String[] myCategoryAds = {"Cars", "Personal computers", "Smartphone", "Appliances"};
+    private int deleteImageCounter = 0;
+
 
     public void updateTotalViews(final NewPost newPost){
 
@@ -49,33 +52,81 @@ public class DbManager {
         total_views++;
         databaseReference.child(newPost.getKey()).child("Ads/totalViews").setValue(String.valueOf(total_views));
     }
-
+    //?????
     public void deleteItem(final NewPost newPost){
+        StorageReference storageReference = null;
 
-        StorageReference storageReference = firebaseStorage.getReferenceFromUrl(newPost.getImId());
+        switch (deleteImageCounter){
+
+            case 0:
+                if(!newPost.getImId().equals("null")) {
+                    storageReference = firebaseStorage.getReferenceFromUrl(newPost.getImId());
+                }else {
+                    deleteImageCounter++;
+                    deleteItem(newPost);
+                }
+                break;
+            case 1:
+                if(!newPost.getImId2().equals("null")) {
+                    storageReference = firebaseStorage.getReferenceFromUrl(newPost.getImId2());
+                }else {
+                    deleteImageCounter++;
+                    deleteItem(newPost);
+                }
+                break;
+            case 2:
+                if(!newPost.getImId3().equals("null")) {
+                    storageReference = firebaseStorage.getReferenceFromUrl(newPost.getImId3());
+                }else {
+                    deleteDbItem(newPost);
+                    storageReference = null;
+                    deleteImageCounter = 0;
+                }
+                break;
+        }
+        if(storageReference == null) return;
+
         storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                DatabaseReference databaseReference = firebaseDatabase.getReference(newPost.getCategory());
-                databaseReference.child(newPost.getKey()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    
-                    @Override
-                    public void onSuccess(Void aVoid) {
 
-                        Toast.makeText(context, R.string.item_done_delete, Toast.LENGTH_SHORT).show();
+                deleteImageCounter++;
+                if(deleteImageCounter < 3){
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                    deleteItem(newPost);
 
-                        Toast.makeText(context, R.string.error_item_delete, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                }else{
+
+                    deleteImageCounter = 0;
+                    deleteDbItem(newPost);
+
+                }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, R.string.error_item_delete, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private void deleteDbItem(NewPost newPost){
+
+        DatabaseReference databaseReference = firebaseDatabase.getReference(newPost.getCategory());
+        databaseReference.child(newPost.getKey()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+
+            @Override
+            public void onSuccess(Void aVoid) {
+
+                Toast.makeText(context, R.string.item_done_delete, Toast.LENGTH_SHORT).show();
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
                 Toast.makeText(context, R.string.error_item_delete, Toast.LENGTH_SHORT).show();
             }
         });

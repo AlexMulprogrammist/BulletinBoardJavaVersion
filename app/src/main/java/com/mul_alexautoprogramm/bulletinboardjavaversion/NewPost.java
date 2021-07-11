@@ -2,6 +2,8 @@ package com.mul_alexautoprogramm.bulletinboardjavaversion;
 
 public class NewPost {
     private String imId;
+    private String imId2;
+    private String imId3;
     private String title;
     private String price;
     private String tel_numb;
@@ -9,6 +11,22 @@ public class NewPost {
     private String key;
     private String uid;
     private String totalViews;
+
+    public String getImId2() {
+        return imId2;
+    }
+
+    public void setImId2(String imId2) {
+        this.imId2 = imId2;
+    }
+
+    public String getImId3() {
+        return imId3;
+    }
+
+    public void setImId3(String imId3) {
+        this.imId3 = imId3;
+    }
 
     public String getTotalViews() {
         return totalViews;

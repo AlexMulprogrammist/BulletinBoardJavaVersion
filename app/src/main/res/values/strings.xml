@@ -52,4 +52,10 @@
     <string name="show_price">Price:</string>
     <string name="show_tel_number">Telephone number:</string>
 
+    <!--ChooseImageActivity -->
+    <string name="main_image">Main image</string>
+    <string name="image_2">Image 2</string>
+    <string name="image_3">Image 3</string>
+
+
 </resources>

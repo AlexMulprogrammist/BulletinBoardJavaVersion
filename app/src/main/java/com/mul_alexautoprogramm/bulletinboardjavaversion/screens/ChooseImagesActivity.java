@@ -80,7 +80,7 @@ public class ChooseImagesActivity extends AppCompatActivity {
 
         Intent intent = new Intent();
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
         startActivityForResult(intent, index);
 
     }
@@ -99,6 +99,28 @@ public class ChooseImagesActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
+
+    }
+
+    public void onClickDeleteMainImage(View view) {
+
+        imMain.setImageResource(R.drawable.ic_add_image);
+        uri_main = "null";
+
+
+    }
+
+    public void onClickDeleteImage2(View view) {
+
+        im_2.setImageResource(R.drawable.ic_add_image);
+        uri_2 = "null";
+
+    }
+
+    public void onClickDeleteImage3(View view) {
+
+        im_3.setImageResource(R.drawable.ic_add_image);
+        uri_3 = "null";
 
     }
 }
