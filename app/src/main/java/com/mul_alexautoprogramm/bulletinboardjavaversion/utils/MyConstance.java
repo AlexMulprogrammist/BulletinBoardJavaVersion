@@ -7,6 +7,8 @@ public class MyConstance {
     public static final String PRICE = "price_" + MainActivity.class.getName();
     public static final String TEL_NUMB = "tel_numb_" + MainActivity.class.getName();
     public static final String IMAGE_ID = "im_id_" + MainActivity.class.getName();
+    public static final String IMAGE_ID_2 = "im_id_2_" + MainActivity.class.getName();
+    public static final String IMAGE_ID_3 = "im_id_3_" + MainActivity.class.getName();
     public static final String DESC = "desc_" + MainActivity.class.getName();
     public static final String KEY = "key_" + MainActivity.class.getName();
     public static final String UID = "uid_" + MainActivity.class.getName();

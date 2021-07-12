@@ -163,7 +163,11 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
             NewPost newPost = arrayListPost.get(getAdapterPosition());
             dbManager.updateTotalViews(newPost);
             Intent i = new Intent(context, ShowLayoutActivity.class);
+
             i.putExtra(MyConstance.IMAGE_ID, newPost.getImId());
+            i.putExtra(MyConstance.IMAGE_ID_2, newPost.getImId2());
+            i.putExtra(MyConstance.IMAGE_ID_3, newPost.getImId3());
+
             i.putExtra(MyConstance.TITLE, newPost.getTitle());
             i.putExtra(MyConstance.PRICE, newPost.getPrice());
             i.putExtra(MyConstance.TEL_NUMB, newPost.getTel_numb());
