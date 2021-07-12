@@ -59,7 +59,7 @@ public class DbManager {
         switch (deleteImageCounter){
 
             case 0:
-                if(!newPost.getImId().equals("null")) {
+                if(!newPost.getImId().equals("empty")) {
                     storageReference = firebaseStorage.getReferenceFromUrl(newPost.getImId());
                 }else {
                     deleteImageCounter++;
@@ -67,7 +67,7 @@ public class DbManager {
                 }
                 break;
             case 1:
-                if(!newPost.getImId2().equals("null")) {
+                if(!newPost.getImId2().equals("empty")) {
                     storageReference = firebaseStorage.getReferenceFromUrl(newPost.getImId2());
                 }else {
                     deleteImageCounter++;
@@ -75,7 +75,7 @@ public class DbManager {
                 }
                 break;
             case 2:
-                if(!newPost.getImId3().equals("null")) {
+                if(!newPost.getImId3().equals("empty")) {
                     storageReference = firebaseStorage.getReferenceFromUrl(newPost.getImId3());
                 }else {
                     deleteDbItem(newPost);

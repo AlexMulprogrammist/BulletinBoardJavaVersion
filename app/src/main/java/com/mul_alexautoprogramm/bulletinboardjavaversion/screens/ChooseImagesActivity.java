@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
 
 public class ChooseImagesActivity extends AppCompatActivity {
-    private String uri_main, uri_2, uri_3;
+    private String uri_main = "empty", uri_2 = "empty", uri_3 = "empty";
     private ImageView imMain, im_2, im_3;
 
 
@@ -105,7 +105,7 @@ public class ChooseImagesActivity extends AppCompatActivity {
     public void onClickDeleteMainImage(View view) {
 
         imMain.setImageResource(R.drawable.ic_add_image);
-        uri_main = "null";
+        uri_main = "empty";
 
 
     }
@@ -113,14 +113,14 @@ public class ChooseImagesActivity extends AppCompatActivity {
     public void onClickDeleteImage2(View view) {
 
         im_2.setImageResource(R.drawable.ic_add_image);
-        uri_2 = "null";
+        uri_2 = "empty";
 
     }
 
     public void onClickDeleteImage3(View view) {
 
         im_3.setImageResource(R.drawable.ic_add_image);
-        uri_3 = "null";
+        uri_3 = "empty";
 
     }
 }

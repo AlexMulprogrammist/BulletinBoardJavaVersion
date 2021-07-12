@@ -1,6 +1,7 @@
 package com.mul_alexautoprogramm.bulletinboardjavaversion.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +13,20 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class ImageAdapterPage extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    int[] imageArray = {R.drawable.imge_test_1, R.drawable.image_test_2, R.drawable.image_test_3};
+    private List<String> imagesUris;
 
 
     public ImageAdapterPage(Context context) {
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
+        imagesUris = new ArrayList<>();
 
     }
 
@@ -32,7 +36,7 @@ public class ImageAdapterPage extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View view = layoutInflater.inflate(R.layout.pager_view_item, container, false);
         ImageView imageViewItem = view.findViewById(R.id.imViewPager);
-        imageViewItem.setImageResource(imageArray[position]);
+        imageViewItem.setImageURI(Uri.parse(imagesUris.get(position)));
         container.addView(view);
 
         return view;
@@ -45,12 +49,25 @@ public class ImageAdapterPage extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return imageArray.length;
+        return imagesUris.size();
     }
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view == ((LinearLayout) object);
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
+    }
+
+    public void updateImages(List<String> images){
+
+        imagesUris.clear();
+        imagesUris.addAll(images);
+        notifyDataSetChanged();
+
     }
 
 }
