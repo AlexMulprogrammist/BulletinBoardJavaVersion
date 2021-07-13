@@ -54,7 +54,7 @@ public class EditActivity extends AppCompatActivity {
     private String temp_uid = "";
     private String temp_time = "";
     private String temp_key = "";
-    private String temp_image_url = "";
+
     private String temp_total_views = "";
     private Boolean is_image_update = false;
     private int loadImageCounter = 0;
@@ -151,8 +151,29 @@ public class EditActivity extends AppCompatActivity {
         temp_uid = i.getStringExtra(MyConstance.UID);
         temp_time = i.getStringExtra(MyConstance.TIME);
         temp_key = i.getStringExtra(MyConstance.KEY);
-        temp_image_url = i.getStringExtra(MyConstance.IMAGE_ID);
         temp_total_views = i.getStringExtra(MyConstance.TOTAL_VIEWS);
+
+        uploadUri[0] = i.getStringExtra(MyConstance.IMAGE_ID);
+        uploadUri[1] = i.getStringExtra(MyConstance.IMAGE_ID_2);
+        uploadUri[2] = i.getStringExtra(MyConstance.IMAGE_ID_3);
+
+
+        for(String s : uploadUri){
+
+            if(!s.equals("empty")) imagesUris.add(s);
+
+        }
+
+        imageAdapterPage.updateImages(imagesUris);
+
+        if(imagesUris.size() > 0) {
+            String dataText = 1 + "/" + imagesUris.size();
+            tvImagesCounter.setText(dataText);
+        }else {
+            imagesUris.size();
+            String dataText = 0 + "/" + imagesUris.size();
+            tvImagesCounter.setText(dataText);
+        }
 
     }
 
@@ -173,7 +194,7 @@ public class EditActivity extends AppCompatActivity {
 
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 assert bitmap != null;
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
                 byte[] byteArray = out.toByteArray();
                 final StorageReference myReference = myStorageRef.child(System.currentTimeMillis() + "_image");
                 UploadTask uploadTask = myReference.putBytes(byteArray);
@@ -190,8 +211,9 @@ public class EditActivity extends AppCompatActivity {
                         if(task.getResult() == null) return;
 
                         uploadUri[loadImageCounter] = task.getResult().toString();
-                        assert uploadUri != null;
+
                         loadImageCounter++;
+
                         if (loadImageCounter < uploadUri.length) {
 
                             upLoadImage();
@@ -240,9 +262,9 @@ public class EditActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
         byte[] byteArray = out.toByteArray();
-        final StorageReference myReference = FirebaseStorage.getInstance().getReferenceFromUrl(temp_image_url);
+        final StorageReference myReference = FirebaseStorage.getInstance().getReferenceFromUrl(uploadUri[0]);
         UploadTask uploadTask = myReference.putBytes(byteArray);
         Task<Uri> task = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
 
@@ -257,7 +279,7 @@ public class EditActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Uri> task) {
                 uploadUri[0] = task.getResult().toString();
                 assert uploadUri != null;
-                temp_image_url = uploadUri.toString();
+                uploadUri[0] = uploadUri.toString();
                 updatePost();
                 Toast.makeText(EditActivity.this, "Upload Done", Toast.LENGTH_SHORT).show();
                 finish();
@@ -308,10 +330,7 @@ public class EditActivity extends AppCompatActivity {
 
             if(resultCode == RESULT_OK){
                 //We got a picture and show it in our ImageView
-                Log.d("MyLog", "Uri main: " + data.getStringExtra("uri_main"));
-                Log.d("MyLog", "Uri_2: " + data.getStringExtra("uri_2"));
-                Log.d("MyLog", "Uri_3: " + data.getStringExtra("uri_3"));
-
+                is_image_update = true;
                 uploadUri[0] = data.getStringExtra("uri_main");
                 uploadUri[1] = data.getStringExtra("uri_2");
                 uploadUri[2] = data.getStringExtra("uri_3");
@@ -323,7 +342,16 @@ public class EditActivity extends AppCompatActivity {
 
                 }
                 imageAdapterPage.updateImages(imagesUris);
-                String dataText = 1 + "/" + imagesUris.size();
+                String dataText;
+                if(imagesUris.size() > 0){
+
+                    dataText = 1 + "/" + imagesUris.size();
+
+                }else{
+
+                    dataText = 0 + "/" + imagesUris.size();
+                }
+
                 tvImagesCounter.setText(dataText);
 
             }
@@ -337,6 +365,11 @@ public class EditActivity extends AppCompatActivity {
     public void onClickImageViewEditAct(View view){
 
         Intent i = new Intent(EditActivity.this, ChooseImagesActivity.class);
+
+            i.putExtra(MyConstance.IMAGE_ID, uploadUri[0]);
+            i.putExtra(MyConstance.IMAGE_ID_2, uploadUri[1]);
+            i.putExtra(MyConstance.IMAGE_ID_3, uploadUri[2]);
+
         startActivityForResult(i,15);
 
     }
@@ -347,7 +380,9 @@ public class EditActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference(temp_category);
         NewPost post = new NewPost();
 
-        post.setImId(temp_image_url);
+        post.setImId(uploadUri[0]);
+        post.setImId2(uploadUri[1]);
+        post.setImId3(uploadUri[2]);
         post.setTitle(edTitle.getText().toString());
         post.setPrice(edPrice.getText().toString());
         post.setTel_numb(edTelNumb.getText().toString());

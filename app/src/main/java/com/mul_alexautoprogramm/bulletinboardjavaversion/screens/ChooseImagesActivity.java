@@ -4,15 +4,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
+import com.squareup.picasso.Picasso;
 
 public class ChooseImagesActivity extends AppCompatActivity {
     private String uri_main = "empty", uri_2 = "empty", uri_3 = "empty";
-    private ImageView imMain, im_2, im_3;
+    private ImageView imMain,im_2,im_3;
+    private ImageView[] imagesViews = new ImageView[3];
 
 
     @Override
@@ -20,14 +24,20 @@ public class ChooseImagesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.choose_images);
         init();
+        getMyIntent();
 
     }
 
     private void init(){
 
+
         imMain = findViewById(R.id.imMainChosse);
         im_2 = findViewById(R.id.image2Choose);
         im_3 = findViewById(R.id.image3Choose);
+        imagesViews[0] = imMain;
+        imagesViews[1] = im_2;
+        imagesViews[2] = im_3;
+
 
     }
 
@@ -84,6 +94,51 @@ public class ChooseImagesActivity extends AppCompatActivity {
         startActivityForResult(intent, index);
 
     }
+
+    private void getMyIntent(){
+        Intent i = getIntent();
+        if(i != null){
+
+            String[] uris = new String[3];
+            uris[0] = i.getStringExtra(MyConstance.IMAGE_ID);
+            uris[1] = i.getStringExtra(MyConstance.IMAGE_ID_2);
+            uris[2] = i.getStringExtra(MyConstance.IMAGE_ID_3);
+
+            setImages(uris);
+
+        }
+
+    }
+
+    private void setImages(String[] uris){
+
+        for(int i = 0; i < uris.length; i++){
+
+            if(!uris[i].equals("empty")){
+
+                showImages(uris[i], i);
+
+            }
+
+        }
+
+
+    }
+
+    private void showImages(String uri, int position){
+
+        if(uri.substring(0,4).equals("http")){
+
+            Picasso.get().load(uri).into(imagesViews[position]);
+
+        }else {
+
+            imagesViews[position].setImageURI(Uri.parse(uri));
+
+        }
+
+    }
+
 
     public void onClickDone(View view) {
         Intent i = new Intent();
