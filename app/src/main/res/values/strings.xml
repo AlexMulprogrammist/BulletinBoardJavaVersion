@@ -15,7 +15,7 @@
     <string name="account">Account</string>
 
 
-    <string name="banner_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
 
     <!--alert_sign_up_layout-->
     <string name="email">Email</string>
@@ -42,7 +42,12 @@
     <string name="delete_title">Delete ads</string>
     <string name="delete_message">Are you sure you want to delete the ad?</string>
     <string name="yes">Yes</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="done">Done</string>
     <string name="no">No</string>
+    <string name="alert_title">Attention</string>
+    <string name="mail_not_verified">You have not verified your account, check your email and verify your account to confirm</string>
+    <string name="mail_verified">You need verified your account, check your email and verify your account </string>
 
     <!--DbManager -->
     <string name="item_done_delete">Delete item done</string>
@@ -56,6 +61,8 @@
     <string name="main_image">Main image</string>
     <string name="image_2">Image 2</string>
     <string name="image_3">Image 3</string>
+    <string name="google_sign_up">Google Sign Up</string>
+    <string name="google_sign_in">Google Sign In</string>
 
 
 </resources>

@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,15 +26,24 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthCredential;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.accounthelper.AccountHelper;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.DataSender;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.PostAdapterRcView;
 
@@ -57,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String currentCategory = "Cars";
     private final int EDIT_RESULT = 12;
     private AdView adView;
+    private AccountHelper accountHelper;
+    //Google Sign In Client
+    private GoogleSignInClient googleSignInClient;
+    public static final int GOOGLE_SIGN_IN_CODE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,24 +135,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == EDIT_RESULT && resultCode == RESULT_OK && data != null){
+        switch (requestCode){
 
-            currentCategory = data.getStringExtra("cat");
+            case EDIT_RESULT:
+                if(resultCode == RESULT_OK && data != null){
+
+                    currentCategory = data.getStringExtra("cat");
+
+                }
+                break;
+            case AccountHelper.GOOGLE_SIGN_IN_CODE:
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                try {
+
+                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                    if(account != null) {
+                        accountHelper.signInFireBaseGoogle(account.getIdToken());
+                    }
+
+
+                } catch (ApiException e) {
+
+                    e.printStackTrace();
+
+                }
+                break;
 
         }
-
     }
 
     //OnClickEdit
     public void onClickEdit(View view){
+        if(mAuth.getCurrentUser() != null){
+            if(mAuth.getCurrentUser().isEmailVerified()){
+                Intent i = new Intent(MainActivity.this, EditActivity.class);
+                startActivityForResult(i, EDIT_RESULT);
+            }else {
 
-        Intent i = new Intent(MainActivity.this, EditActivity.class);
-        startActivityForResult(i, EDIT_RESULT);
+                accountHelper.showAlertDialog(R.string.alert_title, R.string.mail_not_verified);
+
+            }
+        }
 
 
     }
 
-    private void getUserData(){
+    public void getUserData(){
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
@@ -177,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         userEmailTitleHeader = nav_view.getHeaderView(0).findViewById(R.id.tvEmail);
 
         mAuth = FirebaseAuth.getInstance();
+        accountHelper = new AccountHelper(this, mAuth);
 
 
 
@@ -206,7 +249,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         };
     }
 
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -233,14 +275,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.id_sign_up:
 
-                signUpInDialogInflate(R.string.sign_up, R.string.sign_up_button, 0);
+                signUpInDialogInflate(R.string.sign_up, R.string.sign_up_button, R.string.google_sign_up, 0);
                 break;
             case R.id.id_sign_in:
 
-                signUpInDialogInflate(R.string.sign_in, R.string.sign_in_button, 1);
+                signUpInDialogInflate(R.string.sign_in, R.string.sign_in_button, R.string.google_sign_in, 1);
                 break;
             case R.id.id_sign_out:
-                signOut();
+                accountHelper.signOut();
 
                 break;
         }
@@ -248,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
     }
 
-    private void signUpInDialogInflate(int title, int buttonTitle, int index) {
+    private void signUpInDialogInflate(int title, int buttonTitle, int bt_signInGoogle_Title, int index) {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater layoutInflater = this.getLayoutInflater();
@@ -262,82 +304,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         EditText edPassword = dialogView.findViewById(R.id.edPassword);
 
         Button button_title = dialogView.findViewById(R.id.btSignUp);
+        Button button_google_sign_in = dialogView.findViewById(R.id.btSignGoogle);
+        button_google_sign_in.setText(bt_signInGoogle_Title);
         button_title.setText(buttonTitle);
         //OnCLick btTitle
         button_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(index == 0){
-                    signUp(edEmail.getText().toString(), edPassword.getText().toString());
+                    accountHelper.signUp(edEmail.getText().toString(), edPassword.getText().toString());
 
                 }else{
-                    signIn(edEmail.getText().toString(), edPassword.getText().toString());
+                    accountHelper.signIn(edEmail.getText().toString(), edPassword.getText().toString());
 
                 }
                 dialog.dismiss();
+            }
+        });
+        
+        //Google bt Onclick SignIn
+        button_google_sign_in.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+                if(mAuth.getCurrentUser() != null){
+
+                    Toast.makeText(MainActivity.this, "You are already signed in", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    return;
+
+                }else {
+
+                    accountHelper.signInUpGoogle();
+
+                }
+                
+                dialog.dismiss();
+
             }
         });
 
         dialog = dialogBuilder.create();
         dialog.show();
 
-
-    }
-    //signUp
-    private void signUp(String email, String password) {
-
-        if (!email.equals("") && !password.equals("")) {
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                getUserData();
-
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w("MyLogMain", "signInWithCustomToken:failure", task.getException());
-                                Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
-
-                            }
-                        }
-                    });
-        }else {
-            Toast.makeText(this, "Email or password empty", Toast.LENGTH_SHORT).show();
-        }
-    }
-    //signIn
-    private void  signIn(String email, String password){
-        if(!email.equals("") && !password.equals("")) {
-
-
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                               getUserData();
-
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w("MyLogMain", "signInWithCustomToken:failure", task.getException());
-                                Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
-
-                            }
-                        }
-                    });
-        }else {
-            Toast.makeText(this, "Email or password empty", Toast.LENGTH_SHORT).show();
-        }
-    }
-    //signOut
-    private void signOut(){
-        mAuth.signOut();
-        getUserData();
 
     }
 

@@ -14,10 +14,10 @@ import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
 import com.squareup.picasso.Picasso;
 
 public class ChooseImagesActivity extends AppCompatActivity {
-    private String uri_main = "empty", uri_2 = "empty", uri_3 = "empty";
+
     private ImageView imMain,im_2,im_3;
     private ImageView[] imagesViews = new ImageView[3];
-
+    private String[] uris = new String[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,9 @@ public class ChooseImagesActivity extends AppCompatActivity {
         imMain = findViewById(R.id.imMainChosse);
         im_2 = findViewById(R.id.image2Choose);
         im_3 = findViewById(R.id.image3Choose);
+        /*uris[0] = "empty";
+        uris[1] = "empty";
+        uris[2] = "empty";*/
         imagesViews[0] = imMain;
         imagesViews[1] = im_2;
         imagesViews[2] = im_3;
@@ -50,15 +53,15 @@ public class ChooseImagesActivity extends AppCompatActivity {
             switch (requestCode){
 
                 case 1:
-                    uri_main = data.getData().toString();
+                     uris[0] = data.getData().toString();
                     imMain.setImageURI(data.getData());
                     break;
                 case 2:
-                    uri_2 = data.getData().toString();
+                    uris[1] = data.getData().toString();
                     im_2.setImageURI(data.getData());
                     break;
                 case 3:
-                    uri_3 = data.getData().toString();
+                    uris[2] = data.getData().toString();
                     im_3.setImageURI(data.getData());
                     break;
             }
@@ -99,7 +102,6 @@ public class ChooseImagesActivity extends AppCompatActivity {
         Intent i = getIntent();
         if(i != null){
 
-            String[] uris = new String[3];
             uris[0] = i.getStringExtra(MyConstance.IMAGE_ID);
             uris[1] = i.getStringExtra(MyConstance.IMAGE_ID_2);
             uris[2] = i.getStringExtra(MyConstance.IMAGE_ID_3);
@@ -142,9 +144,9 @@ public class ChooseImagesActivity extends AppCompatActivity {
 
     public void onClickDone(View view) {
         Intent i = new Intent();
-        i.putExtra("uri_main", uri_main);
-        i.putExtra("uri_2", uri_2);
-        i.putExtra("uri_3", uri_3);
+        i.putExtra("uri_main", uris[0]);
+        i.putExtra("uri_2", uris[1]);
+        i.putExtra("uri_3", uris[2]);
         setResult(RESULT_OK, i);
         finish();
 
@@ -160,7 +162,7 @@ public class ChooseImagesActivity extends AppCompatActivity {
     public void onClickDeleteMainImage(View view) {
 
         imMain.setImageResource(R.drawable.ic_add_image);
-        uri_main = "empty";
+        uris[0] = "empty";
 
 
     }
@@ -168,14 +170,14 @@ public class ChooseImagesActivity extends AppCompatActivity {
     public void onClickDeleteImage2(View view) {
 
         im_2.setImageResource(R.drawable.ic_add_image);
-        uri_2 = "empty";
+        uris[1] = "empty";
 
     }
 
     public void onClickDeleteImage3(View view) {
 
         im_3.setImageResource(R.drawable.ic_add_image);
-        uri_3 = "empty";
+        uris[2] = "empty";
 
     }
 }

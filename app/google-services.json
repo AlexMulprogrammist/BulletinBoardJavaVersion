@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "763629219651-55r0kqmm33bsd95gjmffui3als1g2tu4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mul_alexautoprogramm.bulletinboardjavaversion",
+            "certificate_hash": "6d2568da643391a6d1a93d80284eb092e9d25923"
+          }
+        },
+        {
           "client_id": "763629219651-87lvima00ei2mk9ivitc5ml3ieolgeaq.apps.googleusercontent.com",
           "client_type": 3
         }

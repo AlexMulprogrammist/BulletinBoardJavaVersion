@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">BulletinBoardJavaVersion</string>
+
+
+    <!--drawer_main_menu-->
+    <string name="my_ads">Мои объявления</string>
+    <string name="cars_ads">Автомобили</string>
+    <string name="pc_ads">Персональные компьютеры</string>
+    <string name="smartphone_ads">Смартфоны</string>
+    <string name="appliances_ads">Бытовая техника</string>
+
+    <string name="sign_up">Регистрация</string>
+    <string name="sign_in">Вход в аккаунт</string>
+    <string name="sign_out">Выход</string>
+    <string name="account">Аккаунт</string>
+
+
+
+
+    <!--alert_sign_up_layout-->
+    <string name="email">Почта</string>
+    <string name="password">Пароль</string>
+    <string name="sign_up_button">Регистрация</string>
+    <string name="sign_in_button">Войти</string>
+
+    <!--User LoginIn or SignUp -->
+    <string name="signInOrSignUp">Войдите или зарегистрируйтесь</string>
+
+    <!--Edit Activity -->
+    <string name="edit_act_title">Заголовок объявления</string>
+    <string name="edit_act_price">Цена</string>
+    <string name="edit_act_description">Описание</string>
+    <string name="edit_tel_numb">Номер телефона</string>
+    <string name="progress_bar">Загрузка..</string>
+
+    <!--main content -->
+    <string name="toggle_open">Открыть</string>
+    <string name="toggle_close">Закрывать</string>
+
+    <!--Main Activity -->
+
+    <string name="delete_title">Удалить объявление</string>
+    <string name="delete_message">Вы уверены, что хотите удалить объявление?</string>
+    <string name="yes">Да</string>
+
+    <string name="done">Выполнено</string>
+    <string name="no">Нет</string>
+    <string name="alert_title">Внимание</string>
+    <string name="mail_not_verified">Вы не подтвердили свою учетную запись, проверьте свою электронную почту и подтвердите свою учетную запись</string>
+    <string name="mail_verified">Вам необходимо подтвердить свою учетную запись, проверьте свою электронную почту и подтвердите свою учетную запись</string>
+
+    <!--DbManager -->
+    <string name="item_done_delete">Успешно удалено</string>
+    <string name="error_item_delete">Изображение не удаляется ОШИБКА!</string>
+
+    <!--show_activity -->
+    <string name="show_price">Цена:</string>
+    <string name="show_tel_number">Номер телефона:</string>
+
+    <!--ChooseImageActivity -->
+    <string name="main_image">Основное изображение</string>
+    <string name="image_2">Изображение 2</string>
+    <string name="image_3">Изображение 3</string>
+    <string name="google_sign_up">Регистрация через Google</string>
+    <string name="google_sign_in">Вход через Google</string>
+
+
+</resources>
