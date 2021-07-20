@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private GoogleSignInClient googleSignInClient;
     public static final int GOOGLE_SIGN_IN_CODE = 10;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,7 +151,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     GoogleSignInAccount account = task.getResult(ApiException.class);
                     if(account != null) {
-                        accountHelper.signInFireBaseGoogle(account.getIdToken());
+                        accountHelper.signInFireBaseGoogle(account.getIdToken(), 0);
+                    }
+
+
+                } catch (ApiException e) {
+
+                    e.printStackTrace();
+
+                }
+                break;
+
+                case AccountHelper.GOOGLE_SIGN_IN_LINK_CODE:
+                Task<GoogleSignInAccount> task2 = GoogleSignIn.getSignedInAccountFromIntent(data);
+                try {
+
+                    GoogleSignInAccount account = task2.getResult(ApiException.class);
+                    if(account != null) {
+                        accountHelper.signInFireBaseGoogle(account.getIdToken(), 1);
                     }
 
 
@@ -172,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivityForResult(i, EDIT_RESULT);
             }else {
 
-                accountHelper.showAlertDialog(R.string.alert_title, R.string.mail_not_verified);
+                accountHelper.showAlertDialogNotVerified(R.string.alert_title, R.string.mail_not_verified);
 
             }
         }
@@ -335,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 }else {
 
-                    accountHelper.signInUpGoogle();
+                    accountHelper.signInUpGoogle(AccountHelper.GOOGLE_SIGN_IN_CODE);
 
                 }
                 

@@ -46,7 +46,7 @@
     <string name="done">Выполнено</string>
     <string name="no">Нет</string>
     <string name="alert_title">Внимание</string>
-    <string name="mail_not_verified">Вы не подтвердили свою учетную запись, проверьте свою электронную почту и подтвердите свою учетную запись</string>
+    <string name="mail_not_verified">Вы не подтвердили свою учетную запись, проверьте свою электронную почту и подтвердите свою учетную запись и зайдите под новым аккаунтом.</string>
     <string name="mail_verified">Вам необходимо подтвердить свою учетную запись, проверьте свою электронную почту и подтвердите свою учетную запись</string>
 
     <!--DbManager -->
@@ -63,6 +63,9 @@
     <string name="image_3">Изображение 3</string>
     <string name="google_sign_up">Регистрация через Google</string>
     <string name="google_sign_in">Вход через Google</string>
+    <string name="send_email_again">Отправить снова</string>
+    <string name="sign_link_message">Войдите в ваш существующий гугл аккаунт для регистрации емайл адреса</string>
+    <string name="account_linked">вы успешно прикрепили ваш емайл адрес к вашему гугл аккаунту</string>
 
 
 </resources>

@@ -46,7 +46,7 @@
     <string name="done">Done</string>
     <string name="no">No</string>
     <string name="alert_title">Attention</string>
-    <string name="mail_not_verified">You have not verified your account, check your email and verify your account to confirm</string>
+    <string name="mail_not_verified">You have not verified your account, check your email and verify your account to confirm  and log in with a new account.</string>
     <string name="mail_verified">You need verified your account, check your email and verify your account </string>
 
     <!--DbManager -->
@@ -63,6 +63,9 @@
     <string name="image_3">Image 3</string>
     <string name="google_sign_up">Google Sign Up</string>
     <string name="google_sign_in">Google Sign In</string>
+    <string name="send_email_again">Send again</string>
+    <string name="sign_link_message">Log into your existing google account to register an email address</string>
+    <string name="account_linked">you have successfully attached your email address to your google account</string>
 
 
 </resources>
