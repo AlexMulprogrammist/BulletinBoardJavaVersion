@@ -72,6 +72,7 @@
     <string name="check_your_email">Проверьте вашу почту</string>
     <string name="error_message">Ошибка восстановления</string>
     <string name="error_enter_your_email">Введите ваш Email!!!</string>
+    <string name="ads">Объявления</string>
 
 
 </resources>

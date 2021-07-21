@@ -13,12 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +50,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.accounthelper.AccountHelper;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.DataSender;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.PostAdapterRcView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +75,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private AccountHelper accountHelper;
     //Google Sign In Client
     private GoogleSignInClient googleSignInClient;
+    private ImageView imUserPhoto;
     public static final int GOOGLE_SIGN_IN_CODE = 10;
+
 
 
     @Override
@@ -86,6 +93,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account != null) {
+            Picasso.get().load(account.getPhotoUrl()).into(imUserPhoto);
+
+        }
         if(adView != null){
 
             adView.resume();
@@ -151,7 +163,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     GoogleSignInAccount account = task.getResult(ApiException.class);
                     if(account != null) {
+                        Picasso.get().load(account.getPhotoUrl()).into(imUserPhoto);
+
                         accountHelper.signInFireBaseGoogle(account.getIdToken(), 0);
+
                     }
 
 
@@ -225,6 +240,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rcView.setAdapter(postAdapterRcView);
 
         nav_view = findViewById(R.id.nav_view);
+        imUserPhoto = nav_view.getHeaderView(0).findViewById(R.id.imFotoUser);
+
+        Menu menu = nav_view.getMenu();
+
+        MenuItem categoryAccount = menu.findItem(R.id.account_category_menu);
+        SpannableString spannableString = new SpannableString(categoryAccount.getTitle());
+        spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.white)),0,spannableString.length(),0);
+        categoryAccount.setTitle(spannableString);
+
+        MenuItem categoryAds = menu.findItem(R.id.ads_category_id);
+        SpannableString spannableStringAds = new SpannableString(categoryAds.getTitle());
+        spannableStringAds.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.white)),0,spannableStringAds.length(),0);
+        categoryAds.setTitle(spannableStringAds);
+
         drawerLayout = findViewById(R.id.drawer_layout);
        //add button menu  in drawerLayout from activity_main
         toolbar = findViewById(R.id.toolbar);
@@ -301,6 +330,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.id_sign_out:
                 accountHelper.signOut();
+                imUserPhoto.setImageResource(android.R.color.transparent);
 
                 break;
         }
