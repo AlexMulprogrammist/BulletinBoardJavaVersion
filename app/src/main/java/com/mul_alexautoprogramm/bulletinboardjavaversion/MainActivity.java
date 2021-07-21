@@ -321,12 +321,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         EditText edEmail = dialogView.findViewById(R.id.edEmail);
         EditText edPassword = dialogView.findViewById(R.id.edPassword);
 
-        Button button_title = dialogView.findViewById(R.id.btSignUp);
+        Button button_title_email = dialogView.findViewById(R.id.btSignUp);
         Button button_google_sign_in = dialogView.findViewById(R.id.btSignGoogle);
+        Button btForgetPassword = dialogView.findViewById(R.id.btForgetPassword);
+
+        switch (index){
+
+            case 0:
+                btForgetPassword.setVisibility(View.GONE);
+                break;
+            case 1:
+                btForgetPassword.setVisibility(View.VISIBLE);
+                break;
+
+        }
+
         button_google_sign_in.setText(bt_signInGoogle_Title);
-        button_title.setText(buttonTitle);
+        button_title_email.setText(buttonTitle);
         //OnCLick btTitle
-        button_title.setOnClickListener(new View.OnClickListener() {
+        button_title_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(index == 0){
@@ -334,6 +347,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 }else{
                     accountHelper.signIn(edEmail.getText().toString(), edPassword.getText().toString());
+
 
                 }
                 dialog.dismiss();
@@ -361,6 +375,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
+
+        // Button Forget Password
+        btForgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+                if(edPassword.isShown()){
+                    button_google_sign_in.setVisibility(View.GONE);
+                    button_title_email.setVisibility(View.GONE);
+                    edPassword.setVisibility(View.GONE);
+                    titleAlert.setText(R.string.message_recover_password);
+                    btForgetPassword.setText(R.string.send_password);
+                }else{
+                    if(!edEmail.getText().toString().equals("")){
+                        FirebaseAuth.getInstance().sendPasswordResetEmail(edEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                
+                                if(task.isSuccessful()){
+
+                                    Toast.makeText(MainActivity.this, R.string.check_your_email, Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                    
+                                }else{
+
+                                    Toast.makeText(MainActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
+                                }
+                                
+                            }
+                        });    
+                    }else {
+
+                        Toast.makeText(MainActivity.this, R.string.error_enter_your_email, Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+            }
+        });
+
+
 
         dialog = dialogBuilder.create();
         dialog.show();

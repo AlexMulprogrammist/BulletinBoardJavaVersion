@@ -66,6 +66,12 @@
     <string name="send_email_again">Отправить снова</string>
     <string name="sign_link_message">Войдите в ваш существующий гугл аккаунт для регистрации емайл адреса</string>
     <string name="account_linked">вы успешно прикрепили ваш емайл адрес к вашему гугл аккаунту</string>
+    <string name="forgoy_password">Забыли пароль?</string>
+    <string name="send_password">"Отправить "</string>
+    <string name="message_recover_password">Введите вашу почту для восстановления пароля</string>
+    <string name="check_your_email">Проверьте вашу почту</string>
+    <string name="error_message">Ошибка восстановления</string>
+    <string name="error_enter_your_email">Введите ваш Email!!!</string>
 
 
 </resources>

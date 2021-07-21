@@ -63,4 +63,16 @@
         app:layout_constraintEnd_toEndOf="@+id/btSignUp"
         app:layout_constraintStart_toStartOf="@+id/btSignUp"
         app:layout_constraintTop_toBottomOf="@+id/btSignUp" />
+
+    <Button
+        android:id="@+id/btForgetPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/forgoy_password"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/tvAlertTitle"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/edEmail"
+        app:layout_constraintTop_toBottomOf="@+id/btSignGoogle" />
 </androidx.constraintlayout.widget.ConstraintLayout>

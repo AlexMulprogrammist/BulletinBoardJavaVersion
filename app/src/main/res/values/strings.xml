@@ -66,6 +66,12 @@
     <string name="send_email_again">Send again</string>
     <string name="sign_link_message">Log into your existing google account to register an email address</string>
     <string name="account_linked">you have successfully attached your email address to your google account</string>
+    <string name="forgoy_password">Forgot your password?</string>
+    <string name="send_password">Send</string>
+    <string name="message_recover_password">Enter your email to recover your password</string>
+    <string name="check_your_email">Сheck your mail</string>
+    <string name="error_message">ERROR forgot password</string>
+    <string name="error_enter_your_email">Enter your Email!!!</string>
 
 
 </resources>
