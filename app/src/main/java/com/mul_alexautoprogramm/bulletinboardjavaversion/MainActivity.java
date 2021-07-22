@@ -34,6 +34,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -352,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         EditText edPassword = dialogView.findViewById(R.id.edPassword);
 
         Button button_title_email = dialogView.findViewById(R.id.btSignUp);
-        Button button_google_sign_in = dialogView.findViewById(R.id.btSignGoogle);
+        SignInButton button_google_sign_in = dialogView.findViewById(R.id.btSignGoogle);
         Button btForgetPassword = dialogView.findViewById(R.id.btForgetPassword);
 
         switch (index){
@@ -366,7 +367,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
-        button_google_sign_in.setText(bt_signInGoogle_Title);
         button_title_email.setText(buttonTitle);
         //OnCLick btTitle
         button_title_email.setOnClickListener(new View.OnClickListener() {
@@ -447,6 +447,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         dialog = dialogBuilder.create();
+        if(dialog.getWindow() != null){
+
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        }
         dialog.show();
 
 
