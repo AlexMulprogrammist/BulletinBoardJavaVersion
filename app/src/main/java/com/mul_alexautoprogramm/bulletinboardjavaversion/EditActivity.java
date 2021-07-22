@@ -34,6 +34,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.ImageAdapterPage;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.screens.ChooseImagesActivity;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.ImagesManager;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
 import com.squareup.picasso.Picasso;
 
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EditActivity extends AppCompatActivity {
+    private final int MAX_UPLOAD_IMAGE_SIZE = 1920;
     private StorageReference myStorageRef;
     private String[] uploadUri = new String[3];
     private String[] uploadNewUri = new String[3];
@@ -196,6 +198,7 @@ public class EditActivity extends AppCompatActivity {
 
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 assert bitmap != null;
+                bitmap = ImagesManager.resizeImage(bitmap, MAX_UPLOAD_IMAGE_SIZE);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
                 byte[] byteArray = out.toByteArray();
                 final StorageReference myReference = myStorageRef.child(System.currentTimeMillis() + "_image");
