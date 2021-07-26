@@ -1,6 +1,8 @@
 package com.mul_alexautoprogramm.bulletinboardjavaversion.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,22 +14,29 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.ImagesManager;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.OnBitmapLoaded;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ImageAdapterPage extends PagerAdapter {
-    private Context context;
+public class ImageAdapterPage extends PagerAdapter implements OnBitmapLoaded {
+    private Activity context;
     private LayoutInflater layoutInflater;
     private List<String> imagesUris;
+    private List<Bitmap> bitmapList;
+    private boolean isFirebaseUri = false;
+    private ImagesManager imagesManager;
 
 
-    public ImageAdapterPage(Context context) {
+    public ImageAdapterPage(Activity context) {
         this.context = context;
+        imagesManager = new ImagesManager(context, this);
         layoutInflater = LayoutInflater.from(context);
         imagesUris = new ArrayList<>();
+        bitmapList = new ArrayList<>();
 
     }
 
@@ -37,14 +46,15 @@ public class ImageAdapterPage extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View view = layoutInflater.inflate(R.layout.pager_view_item, container, false);
         ImageView imageViewItem = view.findViewById(R.id.imViewPager);
-        String uri = imagesUris.get(position);
-        if(uri.substring(0,4).equals("http")){
 
+        if(isFirebaseUri){
+
+            String uri = imagesUris.get(position);
             Picasso.get().load(uri).into(imageViewItem);
 
         }else {
 
-            imageViewItem.setImageURI(Uri.parse(imagesUris.get(position)));
+            imageViewItem.setImageBitmap(bitmapList.get(position));
 
         }
         container.addView(view);
@@ -59,7 +69,18 @@ public class ImageAdapterPage extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return imagesUris.size();
+        int size;
+        if(isFirebaseUri){
+
+            size = imagesUris.size();
+
+        }else {
+
+            size = bitmapList.size();
+
+        }
+
+        return size;
     }
 
     @Override
@@ -73,11 +94,39 @@ public class ImageAdapterPage extends PagerAdapter {
     }
 
     public void updateImages(List<String> images){
+        if(isFirebaseUri){
 
-        imagesUris.clear();
-        imagesUris.addAll(images);
-        notifyDataSetChanged();
+            imagesUris.clear();
+            imagesUris.addAll(images);
+            notifyDataSetChanged();
+
+        }else {
+
+            imagesManager.resizeMultiLargeImages(images);
+
+        }
+
 
     }
 
+    @Override
+    public void onBitmapLoaded(final List<Bitmap> bitmap) {
+
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                bitmapList.clear();
+                bitmapList.addAll(bitmap);
+                notifyDataSetChanged();
+
+            }
+        });
+
+
+    }
+
+    public void setFirebaseUri(boolean firebaseUri) {
+        isFirebaseUri = firebaseUri;
+    }
 }
