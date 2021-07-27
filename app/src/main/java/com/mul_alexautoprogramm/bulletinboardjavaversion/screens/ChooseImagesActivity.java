@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.fxn.pix.Options;
+import com.fxn.pix.Pix;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.ImagesManager;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
@@ -64,27 +66,30 @@ public class ChooseImagesActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && data != null && data.getData() != null){
+        if(resultCode == RESULT_OK && data != null){
+
+            ArrayList<String> returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
+            if(returnValue == null) return;
 
             switch (requestCode){
 
                 case 1:
 
-                     uris[0] = data.getData().toString();
+                     uris[0] = returnValue.get(0);
                      isImagesLoaded = false;
                      imagesManager.resizeMultiLargeImages(Arrays.asList(uris));
 
                     break;
                 case 2:
 
-                    uris[1] = data.getData().toString();
+                    uris[1] = returnValue.get(0);
                     isImagesLoaded = false;
                     imagesManager.resizeMultiLargeImages(Arrays.asList(uris));
 
                     break;
                 case 3:
 
-                    uris[2] = data.getData().toString();
+                    uris[2] = returnValue.get(0);
                     isImagesLoaded = false;
                     imagesManager.resizeMultiLargeImages(Arrays.asList(uris));
 
@@ -149,10 +154,20 @@ public class ChooseImagesActivity extends AppCompatActivity {
     //Request to get a picture
     private void getImage(int index){
 
-        Intent intent = new Intent();
+       /* Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-        startActivityForResult(intent, index);
+        startActivityForResult(intent, index);*/
+
+        Options options = Options.init()
+                .setRequestCode(index)
+                .setCount(1)
+                .setFrontfacing(false)
+                .setExcludeVideos(true)
+                .setScreenOrientation(Options.SCREEN_ORIENTATION_PORTRAIT);
+
+        Pix.start(ChooseImagesActivity.this, options);
+
 
     }
 

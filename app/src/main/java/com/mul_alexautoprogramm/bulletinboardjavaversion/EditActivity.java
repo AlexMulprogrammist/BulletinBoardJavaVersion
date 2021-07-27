@@ -169,12 +169,13 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
         uploadUri[2] = i.getStringExtra(MyConstance.IMAGE_ID_3);
 
 
+
         for (String s : uploadUri) {
 
             if (!s.equals("empty")) imagesUris.add(s);
 
         }
-
+        isImagesLoaded = true;
         imageAdapterPage.updateImages(imagesUris);
 
         if (imagesUris.size() > 0) {
@@ -273,11 +274,7 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
                 //2 if link old_position != link new_position && link in new_position not empty
             } else if (!uploadUri[loadImageCounter].equals(uploadNewUri[loadImageCounter]) && !uploadNewUri[loadImageCounter].equals("empty")) {
 
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(uploadNewUri[loadImageCounter]));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                    bitmap = bitmapArrayList.get(loadImageCounter);
 
             }//3 - if in old_array not key "empty" but  in new_Array on the same position equals key "empty", it means delete old link and old images in old_array
             else if (!uploadUri[loadImageCounter].equals("empty") && uploadNewUri[loadImageCounter].equals("empty")) {

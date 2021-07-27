@@ -25,9 +25,7 @@ import java.util.List;
 public class ImageAdapterPage extends PagerAdapter implements OnBitmapLoaded {
     private Activity context;
     private LayoutInflater layoutInflater;
-    private List<String> imagesUris;
     private List<Bitmap> bitmapList;
-    private boolean isFirebaseUri = false;
     private ImagesManager imagesManager;
 
 
@@ -35,7 +33,6 @@ public class ImageAdapterPage extends PagerAdapter implements OnBitmapLoaded {
         this.context = context;
         imagesManager = new ImagesManager(context, this);
         layoutInflater = LayoutInflater.from(context);
-        imagesUris = new ArrayList<>();
         bitmapList = new ArrayList<>();
 
     }
@@ -47,16 +44,8 @@ public class ImageAdapterPage extends PagerAdapter implements OnBitmapLoaded {
         View view = layoutInflater.inflate(R.layout.pager_view_item, container, false);
         ImageView imageViewItem = view.findViewById(R.id.imViewPager);
 
-        if(isFirebaseUri){
+        imageViewItem.setImageBitmap(bitmapList.get(position));
 
-            String uri = imagesUris.get(position);
-            Picasso.get().load(uri).into(imageViewItem);
-
-        }else {
-
-            imageViewItem.setImageBitmap(bitmapList.get(position));
-
-        }
         container.addView(view);
 
         return view;
@@ -69,18 +58,9 @@ public class ImageAdapterPage extends PagerAdapter implements OnBitmapLoaded {
 
     @Override
     public int getCount() {
-        int size;
-        if(isFirebaseUri){
 
-            size = imagesUris.size();
+        return bitmapList.size();
 
-        }else {
-
-            size = bitmapList.size();
-
-        }
-
-        return size;
     }
 
     @Override
@@ -94,18 +74,8 @@ public class ImageAdapterPage extends PagerAdapter implements OnBitmapLoaded {
     }
 
     public void updateImages(List<String> images){
-        if(isFirebaseUri){
 
-            imagesUris.clear();
-            imagesUris.addAll(images);
-            notifyDataSetChanged();
-
-        }else {
-
-            imagesManager.resizeMultiLargeImages(images);
-
-        }
-
+        imagesManager.resizeMultiLargeImages(images);
 
     }
 
@@ -123,10 +93,6 @@ public class ImageAdapterPage extends PagerAdapter implements OnBitmapLoaded {
             }
         });
 
-
     }
 
-    public void setFirebaseUri(boolean firebaseUri) {
-        isFirebaseUri = firebaseUri;
-    }
 }

@@ -75,8 +75,6 @@ public class ShowLayoutActivity extends AppCompatActivity {
                 if(!s.equals("empty")) imagesUris.add(s);
 
             }
-
-            imageAdapterPage.setFirebaseUri(true);
             imageAdapterPage.updateImages(imagesUris);
 
             if(imagesUris.size() > 0) {

@@ -7,6 +7,7 @@ import android.net.Uri;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,12 +87,21 @@ public class ImagesManager {
 
                     bitmapList.clear();
                     for(int i = 0; i < sizeList.size(); i++){
-                        if(!uris.get(i).equals("empty")) {
+                        if(!uris.get(i).equals("empty") && !uris.get(i).startsWith("http")
+                                && sizeList.get(i)[0] > MAX_SIZE || sizeList.get(i)[1] > MAX_SIZE) {
 
-                            Bitmap bitmap = Picasso.get().load(uris.get(i)).resize(sizeList.get(i)[0], sizeList.get(i)[1]).get();
+                            Bitmap bitmap = Picasso.get().load(Uri.fromFile(new File(uris.get(i)))).resize(sizeList.get(i)[0], sizeList.get(i)[1]).get();
                             bitmapList.add(bitmap);
 
-                        }else {
+                        } else if(uris.get(i).startsWith("http") || !uris.get(i).equals("empty")
+                                && !uris.get(i).startsWith("http")
+                                && sizeList.get(i)[0] < MAX_SIZE
+                                && sizeList.get(i)[1] < MAX_SIZE){
+
+                            Bitmap bitmap = Picasso.get().load(Uri.fromFile(new File(uris.get(i)))).get();
+                            bitmapList.add(bitmap);
+
+                        } else {
 
                             bitmapList.add(null);
 
