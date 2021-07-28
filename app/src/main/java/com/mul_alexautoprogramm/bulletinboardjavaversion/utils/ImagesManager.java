@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Log;
 
 import com.squareup.picasso.Picasso;
 
@@ -93,7 +94,12 @@ public class ImagesManager {
                             Bitmap bitmap = Picasso.get().load(Uri.fromFile(new File(uris.get(i)))).resize(sizeList.get(i)[0], sizeList.get(i)[1]).get();
                             bitmapList.add(bitmap);
 
-                        } else if(uris.get(i).startsWith("http") || !uris.get(i).equals("empty")
+                        } else if(uris.get(i).startsWith("http")){
+
+                            Bitmap bitmap = Picasso.get().load(uris.get(i)).get();
+                            bitmapList.add(bitmap);
+
+                        } else if(!uris.get(i).equals("empty")
                                 && !uris.get(i).startsWith("http")
                                 && sizeList.get(i)[0] < MAX_SIZE
                                 && sizeList.get(i)[1] < MAX_SIZE){
@@ -113,6 +119,7 @@ public class ImagesManager {
 
                 } catch (IOException e) {
                     e.printStackTrace();
+
                 }
 
             }

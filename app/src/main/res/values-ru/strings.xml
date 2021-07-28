@@ -28,9 +28,9 @@
 
     <!--Edit Activity -->
     <string name="edit_act_title">Заголовок объявления</string>
-    <string name="edit_act_price">Цена</string>
-    <string name="edit_act_description">Описание</string>
-    <string name="edit_tel_numb">Номер телефона</string>
+    <string name="edit_act_price">Цена:</string>
+    <string name="edit_act_description">Описание:</string>
+    <string name="edit_tel_numb">Номер телефона:</string>
     <string name="progress_bar">Загрузка..</string>
 
     <!--main content -->

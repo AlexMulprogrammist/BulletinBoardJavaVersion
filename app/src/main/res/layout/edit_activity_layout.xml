@@ -32,7 +32,7 @@
         android:onClick="onClickImageViewEditAct"
         app:layout_constraintEnd_toEndOf="@+id/view_pager"
         app:layout_constraintTop_toTopOf="@+id/view_pager"
-        app:srcCompat="@drawable/ic_editt" />
+        app:srcCompat="@drawable/ic_edit2" />
 
     <TextView
         android:id="@+id/tvImagesCounter"
@@ -67,7 +67,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/edit_act_price"
-        android:inputType="number"
+        android:inputType="text"
         app:layout_constraintEnd_toEndOf="@+id/view_pager"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/view_pager"
