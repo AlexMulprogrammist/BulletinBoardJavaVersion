@@ -10,6 +10,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,20 +24,22 @@ import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.DataSender;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DbManager {
     private Context context;
     private Query mQuery;
     private List<NewPost> newPostList;
     private DataSender dataSender;
-    private  FirebaseDatabase firebaseDatabase;
+    private FirebaseDatabase firebaseDatabase;
     private FirebaseStorage firebaseStorage;
     private int categoryAdsCounter = 0;
     private String[] myCategoryAds = {"Cars", "Personal computers", "Smartphone", "Appliances"};
     private int deleteImageCounter = 0;
+    private FirebaseAuth myAuth;
 
 
-    public void updateTotalViews(final NewPost newPost){
+    public void updateTotalViews(final NewPost newPost) {
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(newPost.getCategory());
         int total_views;
@@ -45,57 +48,56 @@ public class DbManager {
             total_views = Integer.parseInt(newPost.getTotalViews());
 
 
-
-        }catch (NumberFormatException e ){
+        } catch (NumberFormatException e) {
             total_views = 0;
         }
         total_views++;
-        databaseReference.child(newPost.getKey()).child("Ads/totalViews").setValue(String.valueOf(total_views));
+        databaseReference.child(newPost.getKey()).child(myAuth.getUid() + "/Ads/totalViews").setValue(String.valueOf(total_views));
     }
-    //?????
-    public void deleteItem(final NewPost newPost){
+
+    public void deleteItem(final NewPost newPost) {
         StorageReference storageReference = null;
 
-        switch (deleteImageCounter){
+        switch (deleteImageCounter) {
 
             case 0:
-                if(!newPost.getImId().equals("empty")) {
+                if (!newPost.getImId().equals("empty")) {
                     storageReference = firebaseStorage.getReferenceFromUrl(newPost.getImId());
-                }else {
+                } else {
                     deleteImageCounter++;
                     deleteItem(newPost);
                 }
                 break;
             case 1:
-                if(!newPost.getImId2().equals("empty")) {
+                if (!newPost.getImId2().equals("empty")) {
                     storageReference = firebaseStorage.getReferenceFromUrl(newPost.getImId2());
-                }else {
+                } else {
                     deleteImageCounter++;
                     deleteItem(newPost);
                 }
                 break;
             case 2:
-                if(!newPost.getImId3().equals("empty")) {
+                if (!newPost.getImId3().equals("empty")) {
                     storageReference = firebaseStorage.getReferenceFromUrl(newPost.getImId3());
-                }else {
+                } else {
                     deleteDbItem(newPost);
                     storageReference = null;
                     deleteImageCounter = 0;
                 }
                 break;
         }
-        if(storageReference == null) return;
+        if (storageReference == null) return;
 
         storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
 
                 deleteImageCounter++;
-                if(deleteImageCounter < 3){
+                if (deleteImageCounter < 3) {
 
                     deleteItem(newPost);
 
-                }else{
+                } else {
 
                     deleteImageCounter = 0;
                     deleteDbItem(newPost);
@@ -112,7 +114,7 @@ public class DbManager {
 
     }
 
-    private void deleteDbItem(NewPost newPost){
+    private void deleteDbItem(NewPost newPost) {
 
         DatabaseReference databaseReference = firebaseDatabase.getReference(newPost.getCategory());
         databaseReference.child(newPost.getKey()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -134,93 +136,100 @@ public class DbManager {
     }
 
     public DbManager(DataSender dataSender, Context context) {
+
         this.dataSender = dataSender;
         this.context = context;
         newPostList = new ArrayList<>();
         firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
+        myAuth = FirebaseAuth.getInstance();
 
     }
 
     public void getDataFromDb(String path) {
+        if (myAuth.getUid() != null) {
 
-        DatabaseReference databaseReference = firebaseDatabase.getReference(path);
-        //Query orders our announcements by time
-        mQuery = databaseReference.orderByChild("Ads/time");
-        readDataUpdate();
+            DatabaseReference databaseReference = firebaseDatabase.getReference(path);
+            //Query orders our announcements by time
+            mQuery = databaseReference.orderByChild(myAuth.getUid() + "/Ads/time");
+            readDataUpdate();
+
+        }
 
     }
 
-    //getMyAds
     public void getMyAdsDataFromDb(String uid) {
-        if(newPostList.size() > 0) newPostList.clear();
+        if (newPostList.size() > 0) newPostList.clear();
         DatabaseReference databaseReference = firebaseDatabase.getReference(myCategoryAds[0]);
         //Query orders our announcements by uid
-        mQuery = databaseReference.orderByChild("Ads/uid").equalTo(uid);
+        mQuery = databaseReference.orderByChild(myAuth.getUid() + "/Ads/uid").equalTo(uid);
         readMyAdsDataUpdate(uid);
         categoryAdsCounter++;
 
     }
 
-    public void readDataUpdate(){
+    public void readDataUpdate() {
+        if(myAuth.getUid() != null) {
+            mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (newPostList.size() > 0) newPostList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
 
-        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(newPostList.size() > 0) newPostList.clear();
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                        NewPost newPost = dataSnapshot.child(myAuth.getUid()).child("/Ads").getValue(NewPost.class);
+                        newPostList.add(newPost);
 
-                    NewPost newPost = dataSnapshot.child("Ads").getValue(NewPost.class);
-                    newPostList.add(newPost);
-
-                }
-                dataSender.onDataRecived(newPostList);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
-
-    public void readMyAdsDataUpdate(final String uid){
-
-        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-
-                    NewPost newPost = dataSnapshot.child("Ads").getValue(NewPost.class);
-                    newPostList.add(newPost);
-
-                }
-                if(categoryAdsCounter > 3){
-
+                    }
                     dataSender.onDataRecived(newPostList);
-                    newPostList.clear();
-                    categoryAdsCounter = 0;
+                }
 
-                }else{
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-                    DatabaseReference databaseReference = firebaseDatabase.getReference(myCategoryAds[categoryAdsCounter]);
-                    //Query orders our announcements by uid
-                    mQuery = databaseReference.orderByChild("Ads/uid").equalTo(uid);
-                    readMyAdsDataUpdate(uid);
-                    categoryAdsCounter++;
+                }
+            });
+        }
+
+    }
+
+    public void readMyAdsDataUpdate(final String uid) {
+
+
+            mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+
+                        NewPost newPost = dataSnapshot.child(myAuth.getUid() + "/Ads").getValue(NewPost.class);
+                        newPostList.add(newPost);
+
+                    }
+                    if (categoryAdsCounter > 3) {
+
+                        dataSender.onDataRecived(newPostList);
+                        newPostList.clear();
+                        categoryAdsCounter = 0;
+
+                    } else {
+
+                        DatabaseReference databaseReference = firebaseDatabase.getReference(myCategoryAds[categoryAdsCounter]);
+                        //Query orders our announcements by uid
+                        mQuery = databaseReference.orderByChild(myAuth.getUid() + "/Ads/uid").equalTo(uid);
+                        readMyAdsDataUpdate(uid);
+                        categoryAdsCounter++;
+
+                    }
 
                 }
 
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
 
-            }
-        });
+        }
 
-    }
 
 }

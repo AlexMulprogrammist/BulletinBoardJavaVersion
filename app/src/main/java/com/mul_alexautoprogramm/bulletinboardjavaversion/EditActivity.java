@@ -471,28 +471,33 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
 
     private void updatePost() {
 
-        databaseReference = FirebaseDatabase.getInstance().getReference(temp_category);
-        NewPost post = new NewPost();
+        myAut = FirebaseAuth.getInstance();
+        if(myAut.getUid() != null) {
+            databaseReference = FirebaseDatabase.getInstance().getReference(temp_category);
+            NewPost post = new NewPost();
 
-        post.setImId(uploadUri[0]);
-        post.setImId2(uploadUri[1]);
-        post.setImId3(uploadUri[2]);
-        post.setTitle(edTitle.getText().toString());
-        post.setPrice(edPrice.getText().toString());
-        post.setTel_numb(edTelNumb.getText().toString());
-        post.setDesc(edDescription.getText().toString());
-        post.setKey(temp_key);
-        post.setTime(temp_time);
-        post.setUid(temp_uid);
-        post.setCategory(temp_category);
-        post.setTotalViews(temp_total_views);
-        databaseReference.child(temp_key).child("Ads").setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(EditActivity.this, "Upload Done", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+            post.setImId(uploadUri[0]);
+            post.setImId2(uploadUri[1]);
+            post.setImId3(uploadUri[2]);
+            post.setTitle(edTitle.getText().toString());
+            post.setPrice(edPrice.getText().toString());
+            post.setTel_numb(edTelNumb.getText().toString());
+            post.setDesc(edDescription.getText().toString());
+            post.setKey(temp_key);
+            post.setTime(temp_time);
+            post.setUid(temp_uid);
+            post.setCategory(temp_category);
+            post.setTotalViews(temp_total_views);
+
+            databaseReference.child(temp_key).child(myAut.getUid()).child("Ads").setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Toast.makeText(EditActivity.this, "Upload Done", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+
+        }
 
 
     }
@@ -518,7 +523,7 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
             post.setCategory(spinner.getSelectedItem().toString());
             post.setTotalViews("0");
             if (key != null) {
-                databaseReference.child(key).child("Ads").setValue(post);
+                databaseReference.child(key).child(myAut.getUid()).child("Ads").setValue(post);
             }
             Intent i = new Intent();
             i.putExtra("cat", spinner.getSelectedItem().toString());

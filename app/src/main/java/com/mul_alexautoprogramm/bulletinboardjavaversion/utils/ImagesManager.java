@@ -30,34 +30,33 @@ public class ImagesManager {
         bitmapList = new ArrayList<>();
     }
 
-    public int[] getImageSize(String uri){
+    public int[] getImageSize(String uri) {
         int[] size = new int[2];
 
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
 
-        try {
+        BitmapFactory.decodeFile(uri, options);
+        size[0] = options.outWidth;
+        size[1] = options.outHeight;
 
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            InputStream inputStream = context.getContentResolver().openInputStream(Uri.parse(uri));
-            BitmapFactory.decodeStream(inputStream, null, options);
-            size[0] = options.outWidth;
-            size[1] = options.outHeight;
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
         return size;
     }
 
 
-    public void resizeMultiLargeImages(final List<String> uris){
+    public void resizeMultiLargeImages(final List<String> uris) {
         final List<int[]> sizeList = new ArrayList<>();
+        final List<int[]> realSizeList = new ArrayList<>();
+
 
         for (int i = 0; i < uris.size(); i++) {
 
             width = getImageSize(uris.get(i))[0];
             height = getImageSize(uris.get(i))[1];
+
+            realSizeList.add(new int[]{width, height});
+
             float imageRatio = (float) width / (float) height;
 
             if (imageRatio > 1) {
@@ -78,7 +77,8 @@ public class ImagesManager {
 
                 }
             }
-            sizeList.add(new int[]{width,height});
+            sizeList.add(new int[]{width, height});
+
         }
         new Thread(new Runnable() {
             @Override
@@ -87,22 +87,25 @@ public class ImagesManager {
                 try {
 
                     bitmapList.clear();
-                    for(int i = 0; i < sizeList.size(); i++){
-                        if(!uris.get(i).equals("empty") && !uris.get(i).startsWith("http")
-                                && sizeList.get(i)[0] > MAX_SIZE || sizeList.get(i)[1] > MAX_SIZE) {
+
+                    for (int i = 0; i < sizeList.size(); i++) {
+
+
+                        if (!uris.get(i).equals("empty") && !uris.get(i).startsWith("http")
+                                && realSizeList.get(i)[0] > MAX_SIZE || realSizeList.get(i)[1] > MAX_SIZE) {
 
                             Bitmap bitmap = Picasso.get().load(Uri.fromFile(new File(uris.get(i)))).resize(sizeList.get(i)[0], sizeList.get(i)[1]).get();
                             bitmapList.add(bitmap);
 
-                        } else if(uris.get(i).startsWith("http")){
+                        } else if (uris.get(i).startsWith("http")) {
 
                             Bitmap bitmap = Picasso.get().load(uris.get(i)).get();
                             bitmapList.add(bitmap);
 
-                        } else if(!uris.get(i).equals("empty")
+                        } else if (!uris.get(i).equals("empty")
                                 && !uris.get(i).startsWith("http")
-                                && sizeList.get(i)[0] < MAX_SIZE
-                                && sizeList.get(i)[1] < MAX_SIZE){
+                                && realSizeList.get(i)[0] < MAX_SIZE
+                                && realSizeList.get(i)[1] < MAX_SIZE) {
 
                             Bitmap bitmap = Picasso.get().load(Uri.fromFile(new File(uris.get(i)))).get();
                             bitmapList.add(bitmap);
