@@ -3,10 +3,14 @@ package com.mul_alexautoprogramm.bulletinboardjavaversion;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.ImageAdapterPage;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
@@ -21,6 +25,7 @@ public class ShowLayoutActivity extends AppCompatActivity {
     private List<String> imagesUris;
     private ImageAdapterPage imageAdapterPage;
     private TextView tvImagesCounter;
+    private String tell;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +70,8 @@ public class ShowLayoutActivity extends AppCompatActivity {
             tvTelNumb.setText(i.getStringExtra(MyConstance.TEL_NUMB));
             tvDisc.setText(i.getStringExtra(MyConstance.DESC));
 
+            tell = i.getStringExtra(MyConstance.TEL_NUMB);
+
             String[] images = new String[3];
             images[0] = i.getStringExtra(MyConstance.IMAGE_ID);
             images[1] = i.getStringExtra(MyConstance.IMAGE_ID_2);
@@ -88,10 +95,36 @@ public class ShowLayoutActivity extends AppCompatActivity {
 
             //Picasso.get().load(i.getStringExtra(MyConstance.IMAGE_ID)).into(imMainShow);
 
-
-
-
         }
+
+    }
+
+    public void onClickCall(View view){
+
+        String telTemp = "tel:" + tell;
+        Intent iCall = new Intent(Intent.ACTION_DIAL);
+        iCall.setData(Uri.parse(telTemp));
+        startActivity(iCall);
+
+    }
+
+    public void onClickEmailMessage(View view){
+
+        Intent iEmailMessage = new Intent(Intent.ACTION_SEND);
+        iEmailMessage.setType("message/rfc822");
+        iEmailMessage.putExtra(Intent.EXTRA_EMAIL, new String[]{"mulalex834@gmail.com"});
+        iEmailMessage.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.extra_subject));
+        iEmailMessage.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.extra_text));
+
+        try {
+
+            startActivity(Intent.createChooser(iEmailMessage, getResources().getString(R.string.to_open_with)));
+
+        }catch (ActivityNotFoundException e ){
+            Toast.makeText(this, getResources().getString(R.string.dont_have_app_message), Toast.LENGTH_SHORT).show();
+        }
+
+
 
     }
 

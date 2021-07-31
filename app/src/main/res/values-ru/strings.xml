@@ -73,6 +73,10 @@
     <string name="error_message">Ошибка восстановления</string>
     <string name="error_enter_your_email">Введите ваш Email!!!</string>
     <string name="ads">Объявления</string>
+    <string name="extra_subject">Обьявление</string>
+    <string name="extra_text">Мне интересно ваше объявление</string>
+    <string name="to_open_with">Открыть с помощью</string>
+    <string name="dont_have_app_message">У вас нету приложения для отправки сообщений!</string>
 
 
 </resources>

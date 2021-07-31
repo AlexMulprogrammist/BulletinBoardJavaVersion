@@ -72,6 +72,10 @@
     <string name="error_message">ERROR forgot password</string>
     <string name="error_enter_your_email">Enter your Email!!!</string>
     <string name="ads">Ads</string>
+    <string name="extra_subject">Announcement</string>
+    <string name="extra_text">I am interested in your ad</string>
+    <string name="to_open_with">Open with:</string>
+    <string name="dont_have_app_message">You don\'t have an app to send messages!</string>
 
 
 </resources>

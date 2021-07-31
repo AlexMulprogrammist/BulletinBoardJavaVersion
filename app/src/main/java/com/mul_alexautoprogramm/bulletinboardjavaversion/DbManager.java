@@ -185,7 +185,7 @@ public class DbManager {
                        //NewPost newPost = dataSnapshot.child(myAuth.getUid() + "/Ads").getValue(NewPost.class);
                        NewPost newPost = dataSnapshot.getChildren().iterator().next().child("Ads").getValue(NewPost.class);
                        StatusItem statusItem = dataSnapshot.child("status").getValue(StatusItem.class);
-                       if (newPost != null && status != null) newPost.setTotalViews(statusItem.totalViews);
+                       if (newPost != null && statusItem != null) newPost.setTotalViews(statusItem.totalViews);
 
                        newPostList.add(newPost);
 

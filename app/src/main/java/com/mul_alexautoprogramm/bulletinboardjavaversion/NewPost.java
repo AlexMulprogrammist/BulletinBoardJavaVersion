@@ -10,6 +10,7 @@ public class NewPost {
     private String desc;
     private String key;
     private String uid;
+    private String email;
     private String totalViews;
 
     public String getImId2() {
@@ -110,5 +111,13 @@ public class NewPost {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
