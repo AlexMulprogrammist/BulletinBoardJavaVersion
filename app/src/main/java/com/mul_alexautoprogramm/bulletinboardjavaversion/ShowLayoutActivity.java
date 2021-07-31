@@ -125,7 +125,6 @@ public class ShowLayoutActivity extends AppCompatActivity {
         }
 
 
-
     }
 
 }
