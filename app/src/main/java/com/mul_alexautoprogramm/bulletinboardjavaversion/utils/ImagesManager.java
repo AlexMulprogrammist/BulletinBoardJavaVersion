@@ -3,6 +3,7 @@ package com.mul_alexautoprogramm.bulletinboardjavaversion.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.util.Log;
 
@@ -31,15 +32,24 @@ public class ImagesManager {
     }
 
     public int[] getImageSize(String uri) {
-        int[] size = new int[2];
 
+        Log.d("MyLog", "Rotation: " + getImageRotation(uri));
+        int[] size = new int[2];
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-
         BitmapFactory.decodeFile(uri, options);
-        size[0] = options.outWidth;
-        size[1] = options.outHeight;
 
+        if(getImageRotation(uri) == 0) {
+
+            size[0] = options.outWidth;
+            size[1] = options.outHeight;
+
+        }else {
+
+            size[1] = options.outWidth;
+            size[0] = options.outHeight;
+
+        }
 
         return size;
     }
@@ -51,9 +61,9 @@ public class ImagesManager {
 
 
         for (int i = 0; i < uris.size(); i++) {
-
-            width = getImageSize(uris.get(i))[0];
-            height = getImageSize(uris.get(i))[1];
+            int[] sizes = getImageSize(uris.get(i));
+            width = sizes[0];
+            height = sizes[1];
 
             realSizeList.add(new int[]{width, height});
 
@@ -127,6 +137,32 @@ public class ImagesManager {
 
             }
         }).start();
+
+    }
+
+    private int getImageRotation(String imagePath){
+        int rotation = 0;
+
+        File imageFile = new File(imagePath);
+        try {
+
+            ExifInterface exifInterface = new ExifInterface(imageFile.getAbsolutePath());
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            if(ExifInterface.ORIENTATION_ROTATE_90 == orientation || ExifInterface.ORIENTATION_ROTATE_270 == orientation){
+
+                rotation = 90;
+
+            }else {
+
+                rotation = 0;
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return rotation;
 
     }
 
