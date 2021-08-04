@@ -1,6 +1,8 @@
 package com.mul_alexautoprogramm.bulletinboardjavaversion;
 
-public class NewPost {
+import java.io.Serializable;
+
+public class NewPost implements Serializable {
     private String imId;
     private String imId2;
     private String imId3;
@@ -11,7 +13,9 @@ public class NewPost {
     private String key;
     private String uid;
     private String email;
-    private String totalViews;
+    private String totalViews = "0";
+    private String totalEmails = "0";
+    private String totalCalls = "0";
 
     public String getImId2() {
         return imId2;
@@ -120,4 +124,21 @@ public class NewPost {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getTotalEmails() {
+        return totalEmails;
+    }
+
+    public void setTotalEmails(String totalEmails) {
+        this.totalEmails = totalEmails;
+    }
+
+    public String getTotalCalls() {
+        return totalCalls;
+    }
+
+    public void setTotalCalls(String totalCalls) {
+        this.totalCalls = totalCalls;
+    }
+
 }

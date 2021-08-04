@@ -3,16 +3,11 @@ package com.mul_alexautoprogramm.bulletinboardjavaversion;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,10 +32,8 @@ import com.mul_alexautoprogramm.bulletinboardjavaversion.screens.ChooseImagesAct
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.ImagesManager;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.OnBitmapLoaded;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +46,7 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
     private Spinner spinner;
     private DatabaseReference databaseReference;
     private FirebaseAuth myAut;
-    private EditText edTitle, edPrice,edTelNumb, edDescription;
+    private EditText edTitle, edPrice,edTelNumb, edDescription, edEmailAds;
     private Boolean edit_state = false;
     private String temp_category = "";
     private String temp_uid = "";
@@ -134,6 +127,7 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
         edPrice = findViewById(R.id.edPrice);
         edTelNumb = findViewById(R.id.edTelephoneNumber);
         edDescription = findViewById(R.id.edDescription);
+        edEmailAds = findViewById(R.id.edEmailAds);
         getMyIntent();
 
     }
@@ -154,19 +148,23 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
     private void setDataAds(Intent i) {
 
         //Picasso.get().load(i.getStringExtra(MyConstance.IMAGE_ID)).into(imItem); ????????????????????????
-        edTelNumb.setText(i.getStringExtra(MyConstance.TEL_NUMB));
-        edTitle.setText(i.getStringExtra(MyConstance.TITLE));
-        edPrice.setText(i.getStringExtra(MyConstance.PRICE));
-        edDescription.setText(i.getStringExtra(MyConstance.DESC));
-        temp_category = i.getStringExtra(MyConstance.CATEGORY);
-        temp_uid = i.getStringExtra(MyConstance.UID);
-        temp_time = i.getStringExtra(MyConstance.TIME);
-        temp_key = i.getStringExtra(MyConstance.KEY);
-        temp_total_views = i.getStringExtra(MyConstance.TOTAL_VIEWS);
 
-        uploadUri[0] = i.getStringExtra(MyConstance.IMAGE_ID);
-        uploadUri[1] = i.getStringExtra(MyConstance.IMAGE_ID_2);
-        uploadUri[2] = i.getStringExtra(MyConstance.IMAGE_ID_3);
+        NewPost newPost = (NewPost) i.getSerializableExtra(MyConstance.NEW_POST_INTENT);
+        if(newPost == null) return;
+        edTelNumb.setText(newPost.getTel_numb());
+        edTitle.setText(newPost.getTitle());
+        edPrice.setText(newPost.getPrice());
+        edDescription.setText(newPost.getDesc());
+        edEmailAds.setText(newPost.getEmail());
+        temp_category = newPost.getCategory();
+        temp_uid = newPost.getUid();
+        temp_time = newPost.getTime();
+        temp_key = newPost.getKey();
+        temp_total_views = newPost.getTotalViews();
+
+        uploadUri[0] = newPost.getImId();
+        uploadUri[1] = newPost.getImId2();
+        uploadUri[2] = newPost.getImId3();
 
 
 
@@ -460,7 +458,7 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
 
         Intent i = new Intent(EditActivity.this, ChooseImagesActivity.class);
 
-        i.putExtra(MyConstance.IMAGE_ID, uploadUri[0]);
+        i.putExtra(MyConstance.NEW_POST_INTENT, uploadUri[0]);
         i.putExtra(MyConstance.IMAGE_ID_2, uploadUri[1]);
         i.putExtra(MyConstance.IMAGE_ID_3, uploadUri[2]);
 
@@ -483,6 +481,7 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
             post.setPrice(edPrice.getText().toString());
             post.setTel_numb(edTelNumb.getText().toString());
             post.setDesc(edDescription.getText().toString());
+            post.setEmail(edEmailAds.getText().toString());
             post.setKey(temp_key);
             post.setTime(temp_time);
             post.setUid(temp_uid);
@@ -517,6 +516,7 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
             post.setPrice(edPrice.getText().toString());
             post.setTel_numb(edTelNumb.getText().toString());
             post.setDesc(edDescription.getText().toString());
+            post.setEmail(edEmailAds.getText().toString());
             post.setKey(key);
             post.setTime(String.valueOf(System.currentTimeMillis()));
             post.setUid(myAut.getUid());

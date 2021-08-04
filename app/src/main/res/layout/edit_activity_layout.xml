@@ -99,7 +99,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/edTelephoneNumber"
         app:layout_constraintStart_toStartOf="@+id/edTelephoneNumber"
-        app:layout_constraintTop_toBottomOf="@+id/edTelephoneNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/edEmailAds" />
 
     <Spinner
         android:id="@+id/spinner"
@@ -123,4 +123,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_save" />
+
+    <EditText
+        android:id="@+id/edEmailAds"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="@+id/edTelephoneNumber"
+        app:layout_constraintStart_toStartOf="@+id/edTelephoneNumber"
+        app:layout_constraintTop_toBottomOf="@+id/edTelephoneNumber" />
 </androidx.constraintlayout.widget.ConstraintLayout>

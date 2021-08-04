@@ -80,11 +80,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int GOOGLE_SIGN_IN_CODE = 10;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("MyLog","OnCreate");
+        Log.d("MyLog", "OnCreate");
         setContentView(R.layout.activity_main);
         addAds();
         init();
@@ -95,21 +94,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if(account != null) {
+        if (account != null) {
             Picasso.get().load(account.getPhotoUrl()).into(imUserPhoto);
 
         }
-        if(adView != null){
+        if (adView != null) {
 
             adView.resume();
 
         }
-        Log.d("MyLog","OnResume");
-        if(currentCategory.equals("my_ads")){
+        Log.d("MyLog", "OnResume");
+        if (currentCategory.equals("my_ads")) {
 
             dbManager.getMyAdsDataFromDb(mAuth.getUid());
 
-        }else{
+        } else {
 
             dbManager.getDataFromDb(currentCategory);
 
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         super.onPause();
-        if(adView != null){
+        if (adView != null) {
 
             adView.pause();
 
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(adView != null){
+        if (adView != null) {
 
             adView.destroy();
 
@@ -149,10 +148,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
 
             case EDIT_RESULT:
-                if(resultCode == RESULT_OK && data != null){
+                if (resultCode == RESULT_OK && data != null) {
 
                     currentCategory = data.getStringExtra("cat");
 
@@ -163,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 try {
 
                     GoogleSignInAccount account = task.getResult(ApiException.class);
-                    if(account != null) {
+                    if (account != null) {
                         Picasso.get().load(account.getPhotoUrl()).into(imUserPhoto);
 
                         accountHelper.signInFireBaseGoogle(account.getIdToken(), 0);
@@ -178,12 +177,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
 
-                case AccountHelper.GOOGLE_SIGN_IN_LINK_CODE:
+            case AccountHelper.GOOGLE_SIGN_IN_LINK_CODE:
                 Task<GoogleSignInAccount> task2 = GoogleSignIn.getSignedInAccountFromIntent(data);
                 try {
 
                     GoogleSignInAccount account = task2.getResult(ApiException.class);
-                    if(account != null) {
+                    if (account != null) {
                         accountHelper.signInFireBaseGoogle(account.getIdToken(), 1);
                     }
 
@@ -198,42 +197,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    //OnClickEdit
-    public void onClickEdit(View view){
-        if(mAuth.getCurrentUser() != null){
-            if(mAuth.getCurrentUser().isEmailVerified()){
-                Intent i = new Intent(MainActivity.this, EditActivity.class);
-                startActivityForResult(i, EDIT_RESULT);
-            }else {
-
-                accountHelper.showAlertDialogNotVerified(R.string.alert_title, R.string.mail_not_verified);
-
-            }
-        }
-
-
-    }
-
-    public void getUserData(){
+    public void getUserData() {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             userEmailTitleHeader.setText(currentUser.getEmail());
             MAUTH = mAuth.getUid();
-        }else{
+        } else {
             userEmailTitleHeader.setText(R.string.signInOrSignUp);
             MAUTH = "";
         }
 
     }
 
-    private void init(){
+    private void init() {
         setOnItemClickCustom();
         rcView = findViewById(R.id.rcView);
         rcView.setLayoutManager(new LinearLayoutManager(this));
         //test!!!
         List<NewPost> arrayPost = new ArrayList<>();
-        postAdapterRcView = new PostAdapterRcView(arrayPost,this, onItemClickCustom);
+        postAdapterRcView = new PostAdapterRcView(arrayPost, this, onItemClickCustom);
         getDataDB();
         dbManager = new DbManager(dataSender, this);
         postAdapterRcView.setDbManager(dbManager);
@@ -247,18 +230,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         MenuItem categoryAccount = menu.findItem(R.id.account_category_menu);
         SpannableString spannableString = new SpannableString(categoryAccount.getTitle());
-        spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.white)),0,spannableString.length(),0);
+        spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.white)), 0, spannableString.length(), 0);
         categoryAccount.setTitle(spannableString);
 
         MenuItem categoryAds = menu.findItem(R.id.ads_category_id);
         SpannableString spannableStringAds = new SpannableString(categoryAds.getTitle());
-        spannableStringAds.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.white)),0,spannableStringAds.length(),0);
+        spannableStringAds.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.white)), 0, spannableStringAds.length(), 0);
         categoryAds.setTitle(spannableStringAds);
 
         drawerLayout = findViewById(R.id.drawer_layout);
-       //add button menu  in drawerLayout from activity_main
+        //add button menu  in drawerLayout from activity_main
         toolbar = findViewById(R.id.toolbar);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,R.string.toggle_open, R.string.toggle_close);
+        toolbar.inflateMenu(R.menu.main_menu);
+        onToolbarItemClick();
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.toggle_open, R.string.toggle_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -270,11 +256,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         accountHelper = new AccountHelper(this, mAuth);
 
 
-
-
     }
 
-    private void getDataDB(){
+    private void getDataDB() {
 
         dataSender = new DataSender() {
             @Override
@@ -288,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void setOnItemClickCustom(){
+    private void setOnItemClickCustom() {
         onItemClickCustom = new PostAdapterRcView.onItemClickCustom() {
             @Override
             public void onItemSelected(int position) {
@@ -336,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
-            return true;
+        return true;
     }
 
     private void signUpInDialogInflate(int title, int buttonTitle, int bt_signInGoogle_Title, int index) {
@@ -356,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SignInButton button_google_sign_in = dialogView.findViewById(R.id.btSignGoogle);
         Button btForgetPassword = dialogView.findViewById(R.id.btForgetPassword);
 
-        switch (index){
+        switch (index) {
 
             case 0:
                 btForgetPassword.setVisibility(View.GONE);
@@ -372,10 +356,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         button_title_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(index == 0){
+                if (index == 0) {
                     accountHelper.signUp(edEmail.getText().toString(), edPassword.getText().toString());
 
-                }else{
+                } else {
                     accountHelper.signIn(edEmail.getText().toString(), edPassword.getText().toString());
 
 
@@ -383,24 +367,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog.dismiss();
             }
         });
-        
+
         //Google bt Onclick SignIn
         button_google_sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
-                if(mAuth.getCurrentUser() != null){
+
+                if (mAuth.getCurrentUser() != null) {
 
                     Toast.makeText(MainActivity.this, "You are already signed in", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                     return;
 
-                }else {
+                } else {
 
                     accountHelper.signInUpGoogle(AccountHelper.GOOGLE_SIGN_IN_CODE);
 
                 }
-                
+
                 dialog.dismiss();
 
             }
@@ -410,32 +394,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btForgetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
-                if(edPassword.isShown()){
+
+                if (edPassword.isShown()) {
                     button_google_sign_in.setVisibility(View.GONE);
                     button_title_email.setVisibility(View.GONE);
                     edPassword.setVisibility(View.GONE);
                     titleAlert.setText(R.string.message_recover_password);
                     btForgetPassword.setText(R.string.send_password);
-                }else{
-                    if(!edEmail.getText().toString().equals("")){
+                } else {
+                    if (!edEmail.getText().toString().equals("")) {
                         FirebaseAuth.getInstance().sendPasswordResetEmail(edEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                
-                                if(task.isSuccessful()){
+
+                                if (task.isSuccessful()) {
 
                                     Toast.makeText(MainActivity.this, R.string.check_your_email, Toast.LENGTH_SHORT).show();
                                     dialog.dismiss();
-                                    
-                                }else{
+
+                                } else {
 
                                     Toast.makeText(MainActivity.this, R.string.error_message, Toast.LENGTH_SHORT).show();
                                 }
-                                
+
                             }
-                        });    
-                    }else {
+                        });
+                    } else {
 
                         Toast.makeText(MainActivity.this, R.string.error_enter_your_email, Toast.LENGTH_SHORT).show();
 
@@ -445,9 +429,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
-
         dialog = dialogBuilder.create();
-        if(dialog.getWindow() != null){
+        if (dialog.getWindow() != null) {
 
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
@@ -458,12 +441,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     //banner load
-    private void addAds(){
+    private void addAds() {
 
         MobileAds.initialize(this);
         adView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+
+    }
+
+    //Onclick ItemClick Toolbar
+    private void onToolbarItemClick(){
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                if(item.getItemId() == R.id.newAd){
+
+                    if (mAuth.getCurrentUser() != null) {
+                        if (mAuth.getCurrentUser().isEmailVerified()) {
+                            Intent i = new Intent(MainActivity.this, EditActivity.class);
+                            startActivityForResult(i, EDIT_RESULT);
+                        } else {
+
+                            accountHelper.showAlertDialogNotVerified(R.string.alert_title, R.string.mail_not_verified);
+
+                        }
+                    }
+
+                }
+                return false;
+            }
+        });
 
     }
 

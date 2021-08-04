@@ -54,6 +54,50 @@ public class DbManager {
         total_views++;
         StatusItem statusItem = new StatusItem();
         statusItem.totalViews = String.valueOf(total_views);
+        statusItem.totalCalls = newPost.getTotalCalls();
+        statusItem.totalEmails = newPost.getTotalEmails();
+
+        databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
+    }
+
+    public void updateTotalEmails(final NewPost newPost) {
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(newPost.getCategory());
+        int total_emails;
+        try {
+
+            total_emails = Integer.parseInt(newPost.getTotalEmails());
+
+
+        } catch (NumberFormatException e) {
+            total_emails = 0;
+        }
+        total_emails++;
+        StatusItem statusItem = new StatusItem();
+        statusItem.totalEmails = String.valueOf(total_emails);
+        statusItem.totalCalls = newPost.getTotalCalls();
+        statusItem.totalViews = newPost.getTotalViews();
+
+        databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
+    }
+
+    public void updateTotalCalls(final NewPost newPost) {
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(newPost.getCategory());
+        int total_calls;
+        try {
+
+            total_calls = Integer.parseInt(newPost.getTotalCalls());
+
+
+        } catch (NumberFormatException e) {
+            total_calls = 0;
+        }
+        total_calls++;
+        StatusItem statusItem = new StatusItem();
+        statusItem.totalCalls = String.valueOf(total_calls);
+        statusItem.totalEmails = newPost.getTotalEmails();
+        statusItem.totalViews = newPost.getTotalViews();
 
         databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
     }
@@ -185,7 +229,13 @@ public class DbManager {
                        //NewPost newPost = dataSnapshot.child(myAuth.getUid() + "/Ads").getValue(NewPost.class);
                        NewPost newPost = dataSnapshot.getChildren().iterator().next().child("Ads").getValue(NewPost.class);
                        StatusItem statusItem = dataSnapshot.child("status").getValue(StatusItem.class);
-                       if (newPost != null && statusItem != null) newPost.setTotalViews(statusItem.totalViews);
+                       if (newPost != null && statusItem != null){
+
+                           newPost.setTotalViews(statusItem.totalViews);
+                           newPost.setTotalEmails(statusItem.totalEmails);
+                           newPost.setTotalCalls(statusItem.totalCalls);
+
+                       }
 
                        newPostList.add(newPost);
 

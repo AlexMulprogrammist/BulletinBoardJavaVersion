@@ -137,19 +137,8 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
                 public void onClick(View v) {
 
                     Intent i = new Intent(context, EditActivity.class);
-                    i.putExtra(MyConstance.IMAGE_ID, newPost.getImId());
-                    i.putExtra(MyConstance.IMAGE_ID_2, newPost.getImId2());
-                    i.putExtra(MyConstance.IMAGE_ID_3, newPost.getImId3());
-                    i.putExtra(MyConstance.TITLE, newPost.getTitle());
-                    i.putExtra(MyConstance.PRICE, newPost.getPrice());
-                    i.putExtra(MyConstance.TEL_NUMB, newPost.getTel_numb());
-                    i.putExtra(MyConstance.DESC, newPost.getDesc());
-                    i.putExtra(MyConstance.KEY, newPost.getKey());
-                    i.putExtra(MyConstance.UID, newPost.getUid());
-                    i.putExtra(MyConstance.TIME, newPost.getTime());
-                    i.putExtra(MyConstance.CATEGORY, newPost.getCategory());
+                    i.putExtra(MyConstance.NEW_POST_INTENT, newPost);
                     i.putExtra(MyConstance.EDIT_STATE, true);
-                    i.putExtra(MyConstance.TOTAL_VIEWS, newPost.getTotalViews());
                     context.startActivity(i);
 
                 }
@@ -163,20 +152,16 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
         public void onClick(View v) {
 
             NewPost newPost = arrayListPost.get(getAdapterPosition());
+
             dbManager.updateTotalViews(newPost);
+
+            int total_views = Integer.parseInt(newPost.getTotalViews());
+            total_views++;
+            newPost.setTotalViews(String.valueOf(total_views));
+
             Intent i = new Intent(context, ShowLayoutActivity.class);
-
-            i.putExtra(MyConstance.IMAGE_ID, newPost.getImId());
-            i.putExtra(MyConstance.IMAGE_ID_2, newPost.getImId2());
-            i.putExtra(MyConstance.IMAGE_ID_3, newPost.getImId3());
-
-            i.putExtra(MyConstance.TITLE, newPost.getTitle());
-            i.putExtra(MyConstance.PRICE, newPost.getPrice());
-            i.putExtra(MyConstance.TEL_NUMB, newPost.getTel_numb());
-            i.putExtra(MyConstance.DESC, newPost.getDesc());
-
+            i.putExtra(MyConstance.NEW_POST_INTENT, newPost);
             context.startActivity(i);
-
             onItemClickCustom.onItemSelected(getAdapterPosition());
 
         }

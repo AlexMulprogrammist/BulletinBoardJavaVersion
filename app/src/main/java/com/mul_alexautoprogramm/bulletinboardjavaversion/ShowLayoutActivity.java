@@ -14,18 +14,22 @@ import android.widget.Toast;
 
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.ImageAdapterPage;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShowLayoutActivity extends AppCompatActivity {
-    private TextView tvTitle, tvPrice, tvDisc, tvTelNumb;
+    private TextView tvTitle, tvPrice, tvDisc, tvTelNumb, tvEmail;
     private ImageView imMainShow;
     private List<String> imagesUris;
     private ImageAdapterPage imageAdapterPage;
     private TextView tvImagesCounter;
     private String tell;
+    private NewPost newPost;
+    private DbManager dbManager;
+    private boolean isTotalEmailsAdded = false;
+    private boolean isTotalCallsAdded = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,8 @@ public class ShowLayoutActivity extends AppCompatActivity {
     }
 
     private void init(){
+
+        dbManager = new DbManager(null, this);
         tvImagesCounter = findViewById(R.id.tvImagesCounter);
         imagesUris = new ArrayList<>();
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -61,21 +67,26 @@ public class ShowLayoutActivity extends AppCompatActivity {
         tvPrice = findViewById(R.id.tvPriceShowDescript);
         tvDisc = findViewById(R.id.tvDescShow);
         tvTelNumb = findViewById(R.id.tvTelNumbDescShow);
+        tvEmail = findViewById(R.id.tvEmail);
 
         if(getIntent() != null){
 
             Intent i = getIntent();
-            tvTitle.setText(i.getStringExtra(MyConstance.TITLE));
-            tvPrice.setText(i.getStringExtra(MyConstance.PRICE));
-            tvTelNumb.setText(i.getStringExtra(MyConstance.TEL_NUMB));
-            tvDisc.setText(i.getStringExtra(MyConstance.DESC));
+            newPost = (NewPost) i.getSerializableExtra(MyConstance.NEW_POST_INTENT);
+            if(newPost == null) return;
+            tvTitle.setText(newPost.getTitle());
+            tvPrice.setText(newPost.getPrice());
+            tvTelNumb.setText(newPost.getTel_numb());
+            tvEmail.setText(newPost.getEmail());
+            tvDisc.setText(newPost.getDesc());
 
-            tell = i.getStringExtra(MyConstance.TEL_NUMB);
+
+            tell = newPost.getTel_numb();
 
             String[] images = new String[3];
-            images[0] = i.getStringExtra(MyConstance.IMAGE_ID);
-            images[1] = i.getStringExtra(MyConstance.IMAGE_ID_2);
-            images[2] = i.getStringExtra(MyConstance.IMAGE_ID_3);
+            images[0] = newPost.getImId();
+            images[1] = newPost.getImId2();
+            images[2] = newPost.getImId3();
 
             for(String s : images){
 
@@ -101,20 +112,44 @@ public class ShowLayoutActivity extends AppCompatActivity {
 
     public void onClickCall(View view){
 
+        if(!isTotalCallsAdded){
+
+            dbManager.updateTotalCalls(newPost);
+            int total_Calls = Integer.parseInt(newPost.getTotalCalls());
+            total_Calls++;
+            newPost.setTotalCalls(String.valueOf(total_Calls));
+
+            isTotalCallsAdded = true;
+        }
+
+
+
         String telTemp = "tel:" + tell;
         Intent iCall = new Intent(Intent.ACTION_DIAL);
         iCall.setData(Uri.parse(telTemp));
         startActivity(iCall);
 
+
     }
 
     public void onClickEmailMessage(View view){
+        if(!isTotalEmailsAdded){
+
+            dbManager.updateTotalEmails(newPost);
+            int total_Emails = Integer.parseInt(newPost.getTotalEmails());
+            total_Emails++;
+            newPost.setTotalEmails(String.valueOf(total_Emails));
+            isTotalEmailsAdded = true;
+
+        }
+
 
         Intent iEmailMessage = new Intent(Intent.ACTION_SEND);
         iEmailMessage.setType("message/rfc822");
-        iEmailMessage.putExtra(Intent.EXTRA_EMAIL, new String[]{"mulalex834@gmail.com"});
+        iEmailMessage.putExtra(Intent.EXTRA_EMAIL, new String[]{newPost.getEmail()});
         iEmailMessage.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.extra_subject));
         iEmailMessage.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.extra_text));
+
 
         try {
 

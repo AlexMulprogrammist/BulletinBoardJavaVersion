@@ -5,12 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.fxn.pix.Options;
 import com.fxn.pix.Pix;
@@ -175,7 +173,7 @@ public class ChooseImagesActivity extends AppCompatActivity {
         Intent i = getIntent();
         if(i != null){
 
-            uris[0] = i.getStringExtra(MyConstance.IMAGE_ID);
+            uris[0] = i.getStringExtra(MyConstance.NEW_POST_INTENT);
             uris[1] = i.getStringExtra(MyConstance.IMAGE_ID_2);
             uris[2] = i.getStringExtra(MyConstance.IMAGE_ID_3);
             isImagesLoaded = false;
