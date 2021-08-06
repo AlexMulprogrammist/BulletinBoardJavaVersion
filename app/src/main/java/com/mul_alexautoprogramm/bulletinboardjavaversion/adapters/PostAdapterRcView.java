@@ -15,10 +15,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mul_alexautoprogramm.bulletinboardjavaversion.DbManager;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.DbManager;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.EditActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.MainActivity;
-import com.mul_alexautoprogramm.bulletinboardjavaversion.NewPost;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.NewPost;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.ShowLayoutActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
@@ -154,6 +154,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
             NewPost newPost = arrayListPost.get(getAdapterPosition());
 
             dbManager.updateTotalViews(newPost);
+            dbManager.updateFavorites(newPost);
 
             int total_views = Integer.parseInt(newPost.getTotalViews());
             total_views++;

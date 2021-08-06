@@ -1,4 +1,4 @@
-package com.mul_alexautoprogramm.bulletinboardjavaversion;
+package com.mul_alexautoprogramm.bulletinboardjavaversion.DB;
 
 import java.io.Serializable;
 

@@ -1,6 +1,6 @@
 package com.mul_alexautoprogramm.bulletinboardjavaversion.adapters;
 
-import com.mul_alexautoprogramm.bulletinboardjavaversion.NewPost;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.NewPost;
 
 import java.util.List;
 

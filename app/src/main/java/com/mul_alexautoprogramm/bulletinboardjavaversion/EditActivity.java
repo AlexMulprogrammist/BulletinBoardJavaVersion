@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.NewPost;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.ImageAdapterPage;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.screens.ChooseImagesActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.ImagesManager;

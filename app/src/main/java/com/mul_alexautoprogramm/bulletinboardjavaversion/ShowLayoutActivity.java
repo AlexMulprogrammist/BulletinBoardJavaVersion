@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.DbManager;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.NewPost;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.ImageAdapterPage;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
 

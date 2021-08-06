@@ -1,17 +1,14 @@
-package com.mul_alexautoprogramm.bulletinboardjavaversion;
+package com.mul_alexautoprogramm.bulletinboardjavaversion.DB;
 
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.PagerAdapter;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,11 +17,11 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.DataSender;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class DbManager {
     private Context context;
@@ -37,6 +34,10 @@ public class DbManager {
     private String[] myCategoryAds = {"Cars", "Personal computers", "Smartphone", "Appliances"};
     private int deleteImageCounter = 0;
     private FirebaseAuth myAuth;
+    public static final String MY_ACCOUNT_PATH = "accounts";
+    public static final String MY_FAVORITES_PATH = "my_favorites";
+    public static final String MY_ADS_FAVORITES_PATH = "my_ads_favorites_path";
+    private List<FavoritesPathItem> favoritesPathItemList;
 
 
     public void updateTotalViews(final NewPost newPost) {
@@ -100,6 +101,41 @@ public class DbManager {
         statusItem.totalViews = newPost.getTotalViews();
 
         databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
+    }
+
+    public void updateFavorites(final NewPost newPost) {
+        if (myAuth.getUid() == null) return;
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MY_ACCOUNT_PATH);
+        String key = databaseReference.push().getKey();
+        String favorite_path = newPost.getCategory() + "/" + newPost.getKey() + "/" + newPost.getUid() + "/" + "Ads";
+
+        if (key == null) return;
+        boolean isFavorites = false;
+        String keyToDelete = "";
+        for(FavoritesPathItem favoritesPathItem : favoritesPathItemList){
+
+            if(favoritesPathItem.getFavoritesPath().equals(favorite_path)){
+                isFavorites = true;
+                keyToDelete = favoritesPathItem.getKey();
+            }
+
+        }
+
+
+        if(isFavorites){
+
+            deleteFavorites(keyToDelete);
+
+        }else {
+
+            FavoritesPathItem favoritesPathItem = new FavoritesPathItem();
+            favoritesPathItem.setKey(key);
+            favoritesPathItem.setFavoritesPath(favorite_path);
+            databaseReference.child(myAuth.getUid()).child(MY_FAVORITES_PATH).child(key).child(MY_ADS_FAVORITES_PATH).setValue(favoritesPathItem);
+
+        }
+
     }
 
     public void deleteItem(final NewPost newPost) {
@@ -191,6 +227,7 @@ public class DbManager {
         firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
         myAuth = FirebaseAuth.getInstance();
+        favoritesPathItemList = new ArrayList<>();
 
     }
 
@@ -219,38 +256,39 @@ public class DbManager {
     }
 
     public void readDataUpdate() {
-       if(myAuth.getUid() != null) {
-           mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-               @Override
-               public void onDataChange(@NonNull DataSnapshot snapshot) {
-                   if (newPostList.size() > 0) newPostList.clear();
-                   for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+        if (myAuth.getUid() != null) {
+            mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (newPostList.size() > 0) newPostList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
 
-                       //NewPost newPost = dataSnapshot.child(myAuth.getUid() + "/Ads").getValue(NewPost.class);
-                       NewPost newPost = dataSnapshot.getChildren().iterator().next().child("Ads").getValue(NewPost.class);
-                       StatusItem statusItem = dataSnapshot.child("status").getValue(StatusItem.class);
-                       if (newPost != null && statusItem != null){
+                        //NewPost newPost = dataSnapshot.child(myAuth.getUid() + "/Ads").getValue(NewPost.class);
+                        NewPost newPost = dataSnapshot.getChildren().iterator().next().child("Ads").getValue(NewPost.class);
+                        StatusItem statusItem = dataSnapshot.child("status").getValue(StatusItem.class);
+                        if (newPost != null && statusItem != null) {
 
-                           newPost.setTotalViews(statusItem.totalViews);
-                           newPost.setTotalEmails(statusItem.totalEmails);
-                           newPost.setTotalCalls(statusItem.totalCalls);
+                            newPost.setTotalViews(statusItem.totalViews);
+                            newPost.setTotalEmails(statusItem.totalEmails);
+                            newPost.setTotalCalls(statusItem.totalCalls);
 
-                       }
+                        }
 
-                       newPostList.add(newPost);
+                        newPostList.add(newPost);
 
-                   }
+                    }
                     dataSender.onDataRecived(newPostList);
-               }
+                }
 
-               @Override
-               public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-               }
-           });
-       }
+                }
+            });
+        }
 
     }
+
 
     public void readMyAdsDataUpdate(final String uid) {
 
@@ -292,4 +330,33 @@ public class DbManager {
     }
 
 
+    public void readFavorites() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MY_ACCOUNT_PATH);
+        if (myAuth.getUid() == null) return;
+        databaseReference.child(myAuth.getUid()).child(MY_FAVORITES_PATH).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                favoritesPathItemList.clear();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+
+                    favoritesPathItemList.add(ds.child(MY_ADS_FAVORITES_PATH).getValue(FavoritesPathItem.class));
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void deleteFavorites(String key){
+        if(myAuth.getUid() == null) return;
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MY_ACCOUNT_PATH);
+        databaseReference.child(myAuth.getUid()).child(MY_FAVORITES_PATH).child(key).removeValue();
+
+    }
+
 }
+
