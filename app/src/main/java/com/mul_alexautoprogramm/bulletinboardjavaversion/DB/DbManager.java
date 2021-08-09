@@ -19,6 +19,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.DataSender;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.PostAdapterRcView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ public class DbManager {
     public static final String MY_FAVORITES_PATH = "my_favorites";
     public static final String MY_ADS_FAVORITES_PATH = "my_ads_favorites_path";
     private List<FavoritesPathItem> favoritesPathItemList;
+    private OnFavReceivedListener onFavReceivedListener;
 
 
     public void updateTotalViews(final NewPost newPost) {
@@ -103,12 +105,12 @@ public class DbManager {
         databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
     }
 
-    public void updateFavorites(final NewPost newPost) {
+    public void updateFavorites(final String favorite_path) {
         if (myAuth.getUid() == null) return;
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MY_ACCOUNT_PATH);
         String key = databaseReference.push().getKey();
-        String favorite_path = newPost.getCategory() + "/" + newPost.getKey() + "/" + newPost.getUid() + "/" + "Ads";
+
 
         if (key == null) return;
         boolean isFavorites = false;
@@ -289,6 +291,49 @@ public class DbManager {
 
     }
 
+    public void readMyFavoritesDataUpdate(List<FavoritesPathItem> favList) {
+
+        if (myAuth.getUid() != null) {
+
+            DatabaseReference databaseReference = firebaseDatabase.getReference();
+            List<NewPost> tempFavList = new ArrayList<>();
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    tempFavList.clear();
+                    for (FavoritesPathItem item : favList) {
+
+                        NewPost newPost = snapshot.child(item.getFavoritesPath()).getValue(NewPost.class);
+
+                        String[] statusArrayPath = item.getFavoritesPath().split("/");
+                        StatusItem statusItem = snapshot.child(statusArrayPath[0])
+                                .child(statusArrayPath[1])
+                                .child("status").getValue(StatusItem.class);
+
+                      if (newPost != null && statusItem != null) {
+
+                            newPost.setTotalViews(statusItem.totalViews);
+                            newPost.setTotalEmails(statusItem.totalEmails);
+                            newPost.setTotalCalls(statusItem.totalCalls);
+
+                        }
+
+                        tempFavList.add(newPost);
+
+                    }
+                    dataSender.onDataRecived(tempFavList);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
+    }
+
 
     public void readMyAdsDataUpdate(final String uid) {
 
@@ -300,6 +345,16 @@ public class DbManager {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
 
                     NewPost newPost = dataSnapshot.child(myAuth.getUid() + "/Ads").getValue(NewPost.class);
+
+                    StatusItem statusItem = dataSnapshot.child("status").getValue(StatusItem.class);
+                    if (newPost != null && statusItem != null) {
+
+                        newPost.setTotalViews(statusItem.totalViews);
+                        newPost.setTotalEmails(statusItem.totalEmails);
+                        newPost.setTotalCalls(statusItem.totalCalls);
+
+                    }
+
                     newPostList.add(newPost);
 
                 }
@@ -342,6 +397,7 @@ public class DbManager {
                     favoritesPathItemList.add(ds.child(MY_ADS_FAVORITES_PATH).getValue(FavoritesPathItem.class));
 
                 }
+                onFavReceivedListener.onFavReceived(favoritesPathItemList);
             }
 
             @Override
@@ -355,6 +411,12 @@ public class DbManager {
         if(myAuth.getUid() == null) return;
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MY_ACCOUNT_PATH);
         databaseReference.child(myAuth.getUid()).child(MY_FAVORITES_PATH).child(key).removeValue();
+
+    }
+
+    public void setOnFavReceivedListener(OnFavReceivedListener onFavReceivedListener){
+
+        this.onFavReceivedListener = onFavReceivedListener;
 
     }
 

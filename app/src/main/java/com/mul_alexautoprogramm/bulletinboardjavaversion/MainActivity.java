@@ -277,37 +277,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
         int id = item.getItemId();
+        final int id_my_ads = R.id.id_my_ads;
+        final int id_cars = R.id.id_cars;
+        final int id_pc_ads = R.id.id_pc_ads;
+        final int id_smartphone_ads = R.id.id_smartphone_ads;
+        final int id_appliances_ads = R.id.id_appliances_ads;
+        final int id_sign_up = R.id.id_sign_up;
+        final int id_sign_in = R.id.id_sign_in;
+        final int id_sign_out = R.id.id_sign_out;
+        final int id_my_fav = R.id.id_my_fav;
+
         switch (id) {
-            case R.id.id_my_ads:
+            case id_my_ads:
                 currentCategory = "my_ads";
                 dbManager.getMyAdsDataFromDb(mAuth.getUid());
                 break;
-            case R.id.id_cars:
+            case id_my_fav:
+                dbManager.readMyFavoritesDataUpdate(postAdapterRcView.getFavoritesPathItemList());
+                break;
+            case id_cars:
                 currentCategory = "Cars";
                 dbManager.getDataFromDb("Cars");
                 break;
-            case R.id.id_pc_ads:
+            case id_pc_ads:
                 currentCategory = "Personal computers";
                 dbManager.getDataFromDb("Personal computers");
                 break;
-            case R.id.id_smartphone_ads:
+            case id_smartphone_ads:
                 currentCategory = "Smartphone";
                 dbManager.getDataFromDb("Smartphone");
                 break;
-            case R.id.id_appliances_ads:
+            case id_appliances_ads:
                 currentCategory = "Appliances";
                 dbManager.getDataFromDb("Appliances");
                 break;
-            case R.id.id_sign_up:
+            case id_sign_up:
 
                 signUpInDialogInflate(R.string.sign_up, R.string.sign_up_button, R.string.google_sign_up, 0);
                 break;
-            case R.id.id_sign_in:
+            case id_sign_in:
 
                 signUpInDialogInflate(R.string.sign_in, R.string.sign_in_button, R.string.google_sign_in, 1);
                 break;
-            case R.id.id_sign_out:
+            case id_sign_out:
                 accountHelper.signOut();
                 imUserPhoto.setImageResource(android.R.color.transparent);
 
