@@ -124,6 +124,7 @@ public class AccountHelper {
                                 // Sign in success, update UI with the signed-in user's information
                                 mainActivity.getUserData();
 
+
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w("MyLogMain", "signInWithCustomToken:failure", task.getException());

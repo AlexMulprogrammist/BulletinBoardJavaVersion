@@ -248,6 +248,8 @@ public class DbManager {
     }
 
     public void getMyAdsDataFromDb(String uid) {
+
+        if(myAuth.getUid() == null) return;
         if (newPostList.size() > 0) newPostList.clear();
         DatabaseReference databaseReference = firebaseDatabase.getReference(myCategoryAds[0]);
         //Query orders our announcements by uid

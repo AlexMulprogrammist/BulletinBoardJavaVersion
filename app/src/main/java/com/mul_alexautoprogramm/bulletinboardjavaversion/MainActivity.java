@@ -196,9 +196,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (currentUser != null) {
             userEmailTitleHeader.setText(currentUser.getEmail());
             MAUTH = mAuth.getUid();
+            dbManager.readFavorites();
+            onResume();
         } else {
             userEmailTitleHeader.setText(R.string.signInOrSignUp);
             MAUTH = "";
+            postAdapterRcView.clearAdapter();
         }
 
     }

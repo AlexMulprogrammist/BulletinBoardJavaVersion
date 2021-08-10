@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,7 @@ import java.util.List;
 
 public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.AdsViewHolder> implements OnFavReceivedListener {
     public static final String TAG = "MyLog";
-    private List<NewPost> arrayListPost;
+    private List<NewPost> mainPostList;
     private Context context;
     private onItemClickCustom onItemClickCustom;
     private DbManager dbManager;
@@ -42,7 +41,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
 
     public PostAdapterRcView(List<NewPost> arrayListPost, Context context, onItemClickCustom onItemClickCustom) {
 
-        this.arrayListPost = arrayListPost;
+        this.mainPostList = arrayListPost;
         this.context = context;
         this.onItemClickCustom = onItemClickCustom;
         favoritesPathItemList = new ArrayList<>();
@@ -60,7 +59,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
     @Override
     public void onBindViewHolder(@NonNull AdsViewHolder holder, int position) {
 
-        holder.setData(arrayListPost.get(position));
+        holder.setData(mainPostList.get(position));
         setFavIfSelected(holder);
 
     }
@@ -68,7 +67,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
     @Override
     public int getItemCount() {
 
-        return arrayListPost.size();
+        return mainPostList.size();
 
     }
 
@@ -98,7 +97,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
             public void onClick(DialogInterface dialog, int which) {
 
                 dbManager.deleteItem(newPost);
-                arrayListPost.remove(position);
+                mainPostList.remove(position);
                 notifyItemRemoved(position);
 
             }
@@ -119,8 +118,8 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
 
     public void updateAdapter(List<NewPost> listData){
 
-        arrayListPost.clear();
-        arrayListPost.addAll(listData);
+        mainPostList.clear();
+        mainPostList.addAll(listData);
         notifyDataSetChanged();
 
     }
@@ -262,7 +261,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
         @Override
         public void onClick(View v) {
 
-            NewPost newPost = arrayListPost.get(getAdapterPosition());
+            NewPost newPost = mainPostList.get(getAdapterPosition());
 
             dbManager.updateTotalViews(newPost);
 
@@ -283,4 +282,12 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
     public List<FavoritesPathItem> getFavoritesPathItemList() {
         return favoritesPathItemList;
     }
+
+    public void clearAdapter(){
+
+        mainPostList.clear();
+        notifyDataSetChanged();
+
+    }
+
 }
