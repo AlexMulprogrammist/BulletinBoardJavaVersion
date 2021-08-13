@@ -20,6 +20,7 @@ import com.google.firebase.storage.StorageReference;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.R;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.DataSender;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.PostAdapterRcView;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,113 +33,18 @@ public class DbManager {
     private FirebaseDatabase firebaseDatabase;
     private FirebaseStorage firebaseStorage;
     private int categoryAdsCounter = 0;
-    private String[] myCategoryAds = {"Cars", "Personal computers", "Smartphone", "Appliances"};
     private int deleteImageCounter = 0;
     private FirebaseAuth myAuth;
     public static final String MY_ACCOUNT_PATH = "accounts";
     public static final String MY_FAVORITES_PATH = "my_favorites";
     public static final String MY_ADS_FAVORITES_PATH = "my_ads_favorites_path";
+    public static final String MAIN_ADS_PATH = "main_ads_path";
+    public static final String ORDER_BY_CAT_TIME = "/status/cat_time";
     private List<FavoritesPathItem> favoritesPathItemList;
     private OnFavReceivedListener onFavReceivedListener;
 
 
-    public void updateTotalViews(final NewPost newPost) {
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(newPost.getCategory());
-        int total_views;
-        try {
-
-            total_views = Integer.parseInt(newPost.getTotalViews());
-
-
-        } catch (NumberFormatException e) {
-            total_views = 0;
-        }
-        total_views++;
-        StatusItem statusItem = new StatusItem();
-        statusItem.totalViews = String.valueOf(total_views);
-        statusItem.totalCalls = newPost.getTotalCalls();
-        statusItem.totalEmails = newPost.getTotalEmails();
-
-        databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
-    }
-
-    public void updateTotalEmails(final NewPost newPost) {
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(newPost.getCategory());
-        int total_emails;
-        try {
-
-            total_emails = Integer.parseInt(newPost.getTotalEmails());
-
-
-        } catch (NumberFormatException e) {
-            total_emails = 0;
-        }
-        total_emails++;
-        StatusItem statusItem = new StatusItem();
-        statusItem.totalEmails = String.valueOf(total_emails);
-        statusItem.totalCalls = newPost.getTotalCalls();
-        statusItem.totalViews = newPost.getTotalViews();
-
-        databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
-    }
-
-    public void updateTotalCalls(final NewPost newPost) {
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(newPost.getCategory());
-        int total_calls;
-        try {
-
-            total_calls = Integer.parseInt(newPost.getTotalCalls());
-
-
-        } catch (NumberFormatException e) {
-            total_calls = 0;
-        }
-        total_calls++;
-        StatusItem statusItem = new StatusItem();
-        statusItem.totalCalls = String.valueOf(total_calls);
-        statusItem.totalEmails = newPost.getTotalEmails();
-        statusItem.totalViews = newPost.getTotalViews();
-
-        databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
-    }
-
-    public void updateFavorites(final String favorite_path) {
-        if (myAuth.getUid() == null) return;
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MY_ACCOUNT_PATH);
-        String key = databaseReference.push().getKey();
-
-
-        if (key == null) return;
-        boolean isFavorites = false;
-        String keyToDelete = "";
-        for(FavoritesPathItem favoritesPathItem : favoritesPathItemList){
-
-            if(favoritesPathItem.getFavoritesPath().equals(favorite_path)){
-                isFavorites = true;
-                keyToDelete = favoritesPathItem.getKey();
-            }
-
-        }
-
-
-        if(isFavorites){
-
-            deleteFavorites(keyToDelete);
-
-        }else {
-
-            FavoritesPathItem favoritesPathItem = new FavoritesPathItem();
-            favoritesPathItem.setKey(key);
-            favoritesPathItem.setFavoritesPath(favorite_path);
-            databaseReference.child(myAuth.getUid()).child(MY_FAVORITES_PATH).child(key).child(MY_ADS_FAVORITES_PATH).setValue(favoritesPathItem);
-
-        }
-
-    }
 
     public void deleteItem(final NewPost newPost) {
         StorageReference storageReference = null;
@@ -233,31 +139,25 @@ public class DbManager {
 
     }
 
-    public void getDataFromDb(String path) {
+    public void getDataFromDb(String category, String lastTime) {
         if (myAuth.getUid() != null) {
 
-            Log.d("MyLog", "getDataFromDb myAuth.getUid() != null" + myAuth.getUid());
+            //Log.d("MyLog", "getDataFromDb myAuth.getUid() != null" + myAuth.getUid());
 
-            DatabaseReference databaseReference = firebaseDatabase.getReference(path);
+            DatabaseReference databaseReference = firebaseDatabase.getReference(MAIN_ADS_PATH);
             //Query orders our announcements by time
-            mQuery = databaseReference.orderByChild("Ads/time");
+            if(lastTime.equals("0")){
+                mQuery = databaseReference.orderByChild(ORDER_BY_CAT_TIME).startAt(category).endAt(category + "\uf8ff");
+            }else {
+                mQuery = databaseReference.orderByChild(ORDER_BY_CAT_TIME).startAt(category).endAt(category + "\uf8ff");
+            }
             readDataUpdate();
+
 
         }
 
     }
 
-    public void getMyAdsDataFromDb(String uid) {
-
-        if(myAuth.getUid() == null) return;
-        if (newPostList.size() > 0) newPostList.clear();
-        DatabaseReference databaseReference = firebaseDatabase.getReference(myCategoryAds[0]);
-        //Query orders our announcements by uid
-        mQuery = databaseReference.orderByChild(myAuth.getUid() + "/Ads/uid").equalTo(uid);
-        readMyAdsDataUpdate(uid);
-        categoryAdsCounter++;
-
-    }
 
     public void readDataUpdate() {
         if (myAuth.getUid() != null) {
@@ -292,6 +192,7 @@ public class DbManager {
         }
 
     }
+
 
     public void readMyFavoritesDataUpdate(List<FavoritesPathItem> favList) {
 
@@ -336,8 +237,117 @@ public class DbManager {
 
     }
 
+    public void updateTotalViews(final NewPost newPost) {
 
-    public void readMyAdsDataUpdate(final String uid) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MAIN_ADS_PATH);
+        int total_views;
+        try {
+            total_views = Integer.parseInt(newPost.getTotalViews());
+        } catch (NumberFormatException e) {
+            total_views = 0;
+        }
+        total_views++;
+        StatusItem statusItem = new StatusItem();
+        statusItem.totalViews = String.valueOf(total_views);
+        statusItem.totalCalls = newPost.getTotalCalls();
+        statusItem.totalEmails = newPost.getTotalEmails();
+        statusItem.cat_time = newPost.getCategory() + "_" + newPost.getTime();
+
+        databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
+    }
+
+    public void updateTotalEmails(final NewPost newPost) {
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MAIN_ADS_PATH);
+        int total_emails;
+        try {
+
+            total_emails = Integer.parseInt(newPost.getTotalEmails());
+
+
+        } catch (NumberFormatException e) {
+            total_emails = 0;
+        }
+        total_emails++;
+        StatusItem statusItem = new StatusItem();
+        statusItem.totalEmails = String.valueOf(total_emails);
+        statusItem.totalCalls = newPost.getTotalCalls();
+        statusItem.totalViews = newPost.getTotalViews();
+        statusItem.cat_time = newPost.getCategory() + "_" + newPost.getTime();
+
+        databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
+    }
+
+    public void updateTotalCalls(final NewPost newPost) {
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MAIN_ADS_PATH);
+        int total_calls;
+        try {
+
+            total_calls = Integer.parseInt(newPost.getTotalCalls());
+
+
+        } catch (NumberFormatException e) {
+            total_calls = 0;
+        }
+        total_calls++;
+        StatusItem statusItem = new StatusItem();
+        statusItem.totalCalls = String.valueOf(total_calls);
+        statusItem.totalEmails = newPost.getTotalEmails();
+        statusItem.totalViews = newPost.getTotalViews();
+        statusItem.cat_time = newPost.getCategory() + "_" + newPost.getTime();
+
+        databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
+    }
+
+    public void updateFavorites(final String favorite_path) {
+        if (myAuth.getUid() == null) return;
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MY_ACCOUNT_PATH);
+        String key = databaseReference.push().getKey();
+
+
+        if (key == null) return;
+        boolean isFavorites = false;
+        String keyToDelete = "";
+        for(FavoritesPathItem favoritesPathItem : favoritesPathItemList){
+
+            if(favoritesPathItem.getFavoritesPath().equals(favorite_path)){
+                isFavorites = true;
+                keyToDelete = favoritesPathItem.getKey();
+            }
+
+        }
+
+
+        if(isFavorites){
+
+            deleteFavorites(keyToDelete);
+
+        }else {
+
+            FavoritesPathItem favoritesPathItem = new FavoritesPathItem();
+            favoritesPathItem.setKey(key);
+            favoritesPathItem.setFavoritesPath(favorite_path);
+            databaseReference.child(myAuth.getUid()).child(MY_FAVORITES_PATH).child(key).child(MY_ADS_FAVORITES_PATH).setValue(favoritesPathItem);
+
+        }
+
+    }
+
+    public void getMyAdsDataFromDb(String uid) {
+
+        if(myAuth.getUid() == null) return;
+        if (newPostList.size() > 0) newPostList.clear();
+        DatabaseReference databaseReference = firebaseDatabase.getReference(MAIN_ADS_PATH);
+        //Query orders our announcements by uid
+        mQuery = databaseReference.orderByChild(myAuth.getUid() + "/Ads/uid").equalTo(uid);
+        readMyAdsDataUpdate();
+        categoryAdsCounter++;
+
+    }
+
+    public void readMyAdsDataUpdate() {
 
 
         mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -360,21 +370,8 @@ public class DbManager {
                     newPostList.add(newPost);
 
                 }
-                if (categoryAdsCounter > 3) {
 
-                    dataSender.onDataRecived(newPostList);
-                    newPostList.clear();
-                    categoryAdsCounter = 0;
-
-                } else {
-
-                    DatabaseReference databaseReference = firebaseDatabase.getReference(myCategoryAds[categoryAdsCounter]);
-                    //Query orders our announcements by uid
-                    mQuery = databaseReference.orderByChild(myAuth.getUid() + "/Ads/uid").equalTo(uid);
-                    readMyAdsDataUpdate(uid);
-                    categoryAdsCounter++;
-
-                }
+                dataSender.onDataRecived(newPostList);
 
             }
 
@@ -385,7 +382,6 @@ public class DbManager {
         });
 
     }
-
 
     public void readFavorites() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MY_ACCOUNT_PATH);
@@ -421,6 +417,8 @@ public class DbManager {
         this.onFavReceivedListener = onFavReceivedListener;
 
     }
+
+
 
 }
 

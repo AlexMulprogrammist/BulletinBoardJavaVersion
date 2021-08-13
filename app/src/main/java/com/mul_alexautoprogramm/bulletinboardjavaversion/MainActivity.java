@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         addAds();
         init();
+        setOnScrollListener();
 
     }
 
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else {
 
-            dbManager.getDataFromDb(currentCategory);
+            dbManager.getDataFromDb(currentCategory, "0");
 
         }
 
@@ -255,6 +256,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void setOnScrollListener(){
+
+        rcView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+
+                if(!rcView.canScrollVertically(1)){
+
+
+                   /* dbManager.getDataFromDb("Cars", postAdapterRcView.getMainList()
+                            .get(postAdapterRcView.getMainList().size() - 1)
+                            .getTime());
+                    rcView.scrollToPosition(0);*/
+
+                }else if(!rcView.canScrollVertically(-1)){
+
+
+                    //dbManager.getDataFromDb("Cars", "0");
+                }
+
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
+    }
+
     private void getDataDB() {
 
         dataSender = new DataSender() {
@@ -302,19 +329,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case id_cars:
                 currentCategory = "Cars";
-                dbManager.getDataFromDb("Cars");
+                dbManager.getDataFromDb("Cars", "0");
                 break;
             case id_pc_ads:
                 currentCategory = "Personal computers";
-                dbManager.getDataFromDb("Personal computers");
+                dbManager.getDataFromDb("Personal computers", "0");
                 break;
             case id_smartphone_ads:
                 currentCategory = "Smartphone";
-                dbManager.getDataFromDb("Smartphone");
+                dbManager.getDataFromDb("Smartphone", "0");
                 break;
             case id_appliances_ads:
                 currentCategory = "Appliances";
-                dbManager.getDataFromDb("Appliances");
+                dbManager.getDataFromDb("Appliances", "0");
                 break;
             case id_sign_up:
 

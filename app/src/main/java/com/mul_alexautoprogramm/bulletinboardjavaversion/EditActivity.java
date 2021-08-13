@@ -27,7 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.DbManager;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.NewPost;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.StatusItem;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.ImageAdapterPage;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.screens.ChooseImagesActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.ImagesManager;
@@ -472,7 +474,7 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
 
         myAut = FirebaseAuth.getInstance();
         if(myAut.getUid() != null) {
-            databaseReference = FirebaseDatabase.getInstance().getReference(temp_category);
+            databaseReference = FirebaseDatabase.getInstance().getReference(DbManager.MAIN_ADS_PATH);
             NewPost post = new NewPost();
 
             post.setImId(uploadUri[0]);
@@ -504,7 +506,7 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
 
     private void savePost() {
 
-        databaseReference = FirebaseDatabase.getInstance().getReference(spinner.getSelectedItem().toString());
+        databaseReference = FirebaseDatabase.getInstance().getReference(DbManager.MAIN_ADS_PATH);
         myAut = FirebaseAuth.getInstance();
         if (myAut.getUid() != null) {
             String key = databaseReference.push().getKey();
@@ -524,7 +526,10 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
             post.setCategory(spinner.getSelectedItem().toString());
             post.setTotalViews("0");
             if (key != null) {
+                StatusItem statusItem = new StatusItem();
+                statusItem.cat_time = post.getCategory() + "_" + post.getTime();
                 databaseReference.child(key).child(myAut.getUid()).child("Ads").setValue(post);
+                databaseReference.child(key).child("status").setValue(statusItem);
             }
             Intent i = new Intent();
             i.putExtra("cat", spinner.getSelectedItem().toString());

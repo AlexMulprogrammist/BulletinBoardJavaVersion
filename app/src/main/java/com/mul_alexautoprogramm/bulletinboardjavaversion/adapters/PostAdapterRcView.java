@@ -290,4 +290,9 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
 
     }
 
+    public List<NewPost> getMainList(){
+
+        return mainPostList;
+    }
+
 }
