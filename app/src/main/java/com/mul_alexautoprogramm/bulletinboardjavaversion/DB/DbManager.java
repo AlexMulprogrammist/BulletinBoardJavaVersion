@@ -108,8 +108,9 @@ public class DbManager {
 
     private void deleteDbItem(NewPost newPost) {
 
-        DatabaseReference databaseReference = firebaseDatabase.getReference(newPost.getCategory());
-        databaseReference.child(newPost.getKey()).child(newPost.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+        DatabaseReference databaseReference = firebaseDatabase.getReference(DbManager.MAIN_ADS_PATH);
+        databaseReference.child(newPost.getKey()).child("status").removeValue();
+        databaseReference.child(newPost.getKey()).child(myAuth.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
 
             @Override
             public void onSuccess(Void aVoid) {
@@ -166,9 +167,14 @@ public class DbManager {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (newPostList.size() > 0) newPostList.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-
+                        NewPost newPost = null;
                         //NewPost newPost = dataSnapshot.child(myAuth.getUid() + "/Ads").getValue(NewPost.class);
-                        NewPost newPost = dataSnapshot.getChildren().iterator().next().child("Ads").getValue(NewPost.class);
+                        for(DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()){
+
+                            if(newPost == null) newPost = dataSnapshot2.child("Ads").getValue(NewPost.class);
+
+                        }
+
                         StatusItem statusItem = dataSnapshot.child("status").getValue(StatusItem.class);
                         if (newPost != null && statusItem != null) {
 

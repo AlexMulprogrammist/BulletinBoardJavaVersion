@@ -328,20 +328,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dbManager.readMyFavoritesDataUpdate(postAdapterRcView.getFavoritesPathItemList());
                 break;
             case id_cars:
-                currentCategory = "Cars";
-                dbManager.getDataFromDb("Cars", "0");
+                currentCategory = getResources().getStringArray(R.array.category_spinner)[0];
+                dbManager.getDataFromDb(currentCategory, "0");
                 break;
             case id_pc_ads:
-                currentCategory = "Personal computers";
-                dbManager.getDataFromDb("Personal computers", "0");
+                currentCategory = getResources().getStringArray(R.array.category_spinner)[1];
+                dbManager.getDataFromDb(currentCategory, "0");
                 break;
             case id_smartphone_ads:
-                currentCategory = "Smartphone";
-                dbManager.getDataFromDb("Smartphone", "0");
+                currentCategory = getResources().getStringArray(R.array.category_spinner)[2];
+                dbManager.getDataFromDb(currentCategory, "0");
                 break;
             case id_appliances_ads:
-                currentCategory = "Appliances";
-                dbManager.getDataFromDb("Appliances", "0");
+                currentCategory = getResources().getStringArray(R.array.category_spinner)[3];
+                dbManager.getDataFromDb(currentCategory, "0");
                 break;
             case id_sign_up:
 
