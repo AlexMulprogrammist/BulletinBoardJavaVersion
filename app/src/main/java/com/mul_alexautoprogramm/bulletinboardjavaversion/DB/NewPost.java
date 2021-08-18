@@ -16,6 +16,8 @@ public class NewPost implements Serializable {
     private String totalViews = "0";
     private String totalEmails = "0";
     private String totalCalls = "0";
+    private long favCounter = 0;
+    private boolean isFav = false;
 
     public String getImId2() {
         return imId2;
@@ -141,4 +143,19 @@ public class NewPost implements Serializable {
         this.totalCalls = totalCalls;
     }
 
+    public long getFavCounter() {
+        return favCounter;
+    }
+
+    public void setFavCounter(long favCounter) {
+        this.favCounter = favCounter;
+    }
+
+    public boolean isFav() {
+        return isFav;
+    }
+
+    public void setFav(boolean fav) {
+        isFav = fav;
+    }
 }

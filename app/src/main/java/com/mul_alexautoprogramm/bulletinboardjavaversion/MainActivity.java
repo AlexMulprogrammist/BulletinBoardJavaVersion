@@ -197,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (currentUser != null) {
             userEmailTitleHeader.setText(currentUser.getEmail());
             MAUTH = mAuth.getUid();
-            dbManager.readFavorites();
             onResume();
         } else {
             userEmailTitleHeader.setText(R.string.signInOrSignUp);
@@ -217,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getDataDB();
         dbManager = new DbManager(dataSender, this);
         postAdapterRcView.setDbManager(dbManager);
-        dbManager.readFavorites();
+
 
         rcView.setAdapter(postAdapterRcView);
 
@@ -325,7 +324,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dbManager.getMyAdsDataFromDb(mAuth.getUid());
                 break;
             case id_my_fav:
-                dbManager.readMyFavoritesDataUpdate(postAdapterRcView.getFavoritesPathItemList());
                 break;
             case id_cars:
                 currentCategory = getResources().getStringArray(R.array.category_spinner)[0];

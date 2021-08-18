@@ -16,8 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.DbManager;
-import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.FavoritesPathItem;
-import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.OnFavReceivedListener;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.EditActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.MainActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.NewPost;
@@ -29,13 +27,13 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.AdsViewHolder> implements OnFavReceivedListener {
+public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.AdsViewHolder>{
     public static final String TAG = "MyLog";
     private List<NewPost> mainPostList;
     private Context context;
     private onItemClickCustom onItemClickCustom;
     private DbManager dbManager;
-    private List<FavoritesPathItem> favoritesPathItemList;
+
 
 
 
@@ -44,7 +42,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
         this.mainPostList = arrayListPost;
         this.context = context;
         this.onItemClickCustom = onItemClickCustom;
-        favoritesPathItemList = new ArrayList<>();
+
 
     }
 
@@ -71,15 +69,6 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
 
     }
 
-    @Override
-    public void onFavReceived(List<FavoritesPathItem> items) {
-
-        //Log.d(TAG, "Items received: " + items.size());
-        favoritesPathItemList.clear();
-        favoritesPathItemList.addAll(items);
-        notifyDataSetChanged();
-
-    }
     private void deleteDialog(final NewPost newPost, int position){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -125,35 +114,15 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
     }
 
     public void setDbManager(DbManager dbManager){
-
         this.dbManager =  dbManager;
-        dbManager.setOnFavReceivedListener(this);
-
-
     }
 
     private void setFavIfSelected(AdsViewHolder holder){
 
-        boolean isFav = false;
-        for(FavoritesPathItem item: favoritesPathItemList){
-
-            if(item.getFavoritesPath().equals(holder.favPath)){
-
-                isFav = true;
-                break;
-
-            }
-
-        }
-
-        if(isFav){
-
+        if(mainPostList.get(holder.getAdapterPosition()).isFav()){
             holder.imFavorites.setImageResource(R.drawable.ic_fav_selected);
-
         }else {
-
             holder.imFavorites.setImageResource(R.drawable.ic_fav_not_selected);
-
         }
 
     }
@@ -168,8 +137,6 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
         private ImageButton imEditItem;
         private ImageButton imDeleteItem;
         private ImageButton imFavorites;
-        public String favPath;
-
 
         public AdsViewHolder(@NonNull View itemView, onItemClickCustom onItemClickCustom) {
             super(itemView);
@@ -203,7 +170,6 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
 
             }
             Picasso.get().load(newPost.getImId()).into(imItemView);
-            favPath = newPost.getCategory() + "/" + newPost.getKey() + "/" + newPost.getUid() + "/" + "Ads";
             tvItemTitle.setText(newPost.getTitle());
             tvItemPrice.setText(newPost.getPrice());
             tvItemTelNumb.setText(newPost.getTel_numb());
@@ -249,7 +215,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
                 @Override
                 public void onClick(View v) {
 
-                    dbManager.updateFavorites(favPath);
+                    dbManager.updateFavorites(newPost.getKey());
 
                 }
             });
@@ -276,11 +242,6 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
             onItemClickCustom.onItemSelected(getAdapterPosition());
 
         }
-    }
-
-
-    public List<FavoritesPathItem> getFavoritesPathItemList() {
-        return favoritesPathItemList;
     }
 
     public void clearAdapter(){
