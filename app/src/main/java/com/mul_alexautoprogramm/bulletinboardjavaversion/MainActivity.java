@@ -324,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dbManager.getMyAdsDataFromDb(mAuth.getUid());
                 break;
             case id_my_fav:
+                dbManager.getMyFavoritesFromDb();
                 break;
             case id_cars:
                 currentCategory = getResources().getStringArray(R.array.category_spinner)[0];

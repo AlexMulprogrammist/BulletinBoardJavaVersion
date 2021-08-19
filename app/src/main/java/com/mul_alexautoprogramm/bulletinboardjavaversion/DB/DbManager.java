@@ -2,9 +2,11 @@ package com.mul_alexautoprogramm.bulletinboardjavaversion.DB;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -162,7 +164,9 @@ public class DbManager {
 
 
     public void readDataUpdate() {
+
         if (myAuth.getUid() != null) {
+
             mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -321,12 +325,27 @@ public class DbManager {
 
     }
 
-    public void updateFavorites(final String key) {
+    public void updateFavorites(final NewPost newPost, PostAdapterRcView.AdsViewHolder holder) {
+
+        if(newPost.isFav()){
+
+            deleteFavorites(newPost, holder);
+
+        }else {
+
+            addFavorites(newPost, holder);
+
+        }
+
+    }
+    
+    private void addFavorites(final NewPost newPost, final PostAdapterRcView.AdsViewHolder holder){
+
         if (myAuth.getUid() == null) return;
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MAIN_ADS_PATH);
         databaseReference
-                .child(key)
+                .child(newPost.getKey())
                 .child(FAVORITES_ADS_PATH)
                 .child(myAuth.getUid())
                 .child(USER_FAVORITES_ID)
@@ -335,17 +354,43 @@ public class DbManager {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
-
+                            holder.imFavorites.setImageResource(R.drawable.ic_fav_selected);
+                            newPost.setFav(true);
                         }
                     }
                 });
 
     }
 
-    private void deleteFavorites(String key){
+    private void deleteFavorites(final NewPost newPost, final PostAdapterRcView.AdsViewHolder holder){
+
         if(myAuth.getUid() == null) return;
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MY_ACCOUNT_PATH);
-        //databaseReference.child(myAuth.getUid()).child(MY_FAVORITES_PATH).child(key).removeValue();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(MAIN_ADS_PATH);
+        databaseReference.child(newPost.getKey()).child(FAVORITES_ADS_PATH).child(myAuth.getUid()).removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            holder.imFavorites.setImageResource(R.drawable.ic_fav_not_selected);
+                            newPost.setFav(false);
+                        }
+                    }
+                });
+
+
+    }
+
+    public void getMyFavoritesFromDb() {
+        if (myAuth.getUid() != null) {
+
+            //Log.d("MyLog", "getDataFromDb myAuth.getUid() != null" + myAuth.getUid());
+            DatabaseReference databaseReference = firebaseDatabase.getReference(MAIN_ADS_PATH);
+            //Query orders our announcements by time
+            mQuery = databaseReference.orderByChild(FAVORITES_ADS_PATH + "/" + myAuth.getUid() + "/" + USER_FAVORITES_ID).equalTo(myAuth.getUid());
+            readDataUpdate();
+
+
+        }
 
     }
 

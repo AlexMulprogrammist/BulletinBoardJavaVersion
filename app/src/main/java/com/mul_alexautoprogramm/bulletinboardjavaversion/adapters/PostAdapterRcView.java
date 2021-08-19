@@ -136,7 +136,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
         private onItemClickCustom onItemClickCustom;
         private ImageButton imEditItem;
         private ImageButton imDeleteItem;
-        private ImageButton imFavorites;
+        public ImageButton imFavorites;
 
         public AdsViewHolder(@NonNull View itemView, onItemClickCustom onItemClickCustom) {
             super(itemView);
@@ -215,7 +215,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
                 @Override
                 public void onClick(View v) {
 
-                    dbManager.updateFavorites(newPost.getKey());
+                    dbManager.updateFavorites(newPost, AdsViewHolder.this);
 
                 }
             });
