@@ -5,5 +5,6 @@ public class StatusItem {
     public String totalCalls = "0";
     public String totalEmails = "0";
     public String cat_time = "";
+    public String filter_by_time = "";
 
 }

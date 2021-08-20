@@ -18,4 +18,7 @@ public class MyConstance {
     public static final String EDIT_STATE = "edit_state_" + MainActivity.class.getName();
     public static final String TOTAL_VIEWS = "total_views" + MainActivity.class.getName();
     public static final int ADS_LIMIT = 2;
+    public static final String ALL_CAT = "all_cat";
+    public static final String MY_ADS = "my_ads";
+    public static final String MY_FAV = "my_fav";
 }

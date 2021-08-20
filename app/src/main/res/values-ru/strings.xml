@@ -79,6 +79,7 @@
     <string name="dont_have_app_message">У вас нету приложения для отправки сообщений!</string>
     <string name="email_two_point">Почта:</string>
     <string name="my_favorites">Избранное</string>
+    <string name="all_ads">Все обьявления</string>
 
 
 </resources>

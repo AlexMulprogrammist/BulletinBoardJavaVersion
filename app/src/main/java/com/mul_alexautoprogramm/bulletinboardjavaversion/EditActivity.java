@@ -528,6 +528,7 @@ public class EditActivity extends AppCompatActivity implements OnBitmapLoaded {
             if (key != null) {
                 StatusItem statusItem = new StatusItem();
                 statusItem.cat_time = post.getCategory() + "_" + post.getTime();
+                statusItem.filter_by_time = post.getTime();
                 databaseReference.child(key).child(myAut.getUid()).child("Ads").setValue(post);
                 databaseReference.child(key).child("status").setValue(statusItem);
             }

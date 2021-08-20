@@ -78,6 +78,7 @@
     <string name="dont_have_app_message">You don\'t have an app to send messages!</string>
     <string name="email_two_point">Email:</string>
     <string name="my_favorites">Favorites</string>
+    <string name="all_ads">All announcements</string>
 
 
 </resources>

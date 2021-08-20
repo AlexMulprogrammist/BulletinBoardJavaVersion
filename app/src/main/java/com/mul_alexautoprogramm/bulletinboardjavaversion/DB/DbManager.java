@@ -45,6 +45,7 @@ public class DbManager {
     public static final String USER_FAVORITES_ID = "user_favorites_id";
     public static final String MAIN_ADS_PATH = "main_ads_path";
     public static final String ORDER_BY_CAT_TIME = "/status/cat_time";
+    public static final String ORDER_BY_TIME = "/status/filter_by_time";
 
 
 
@@ -144,24 +145,35 @@ public class DbManager {
     }
 
     public void getDataFromDb(String category, String lastTime) {
-        if (myAuth.getUid() != null) {
 
-            //Log.d("MyLog", "getDataFromDb myAuth.getUid() != null" + myAuth.getUid());
+        if (myAuth.getUid() == null)  return;
+        DatabaseReference databaseReference = firebaseDatabase.getReference(MAIN_ADS_PATH);
 
-            DatabaseReference databaseReference = firebaseDatabase.getReference(MAIN_ADS_PATH);
-            //Query orders our announcements by time
+        if(category.equals(MyConstance.ALL_CAT)){
+
+            mQuery = databaseReference.orderByChild(ORDER_BY_TIME);
+
+        }else if(category.equals(MyConstance.MY_ADS)){
+
+            mQuery = databaseReference.orderByChild(myAuth.getUid() + "/Ads/uid").equalTo(myAuth.getUid());
+
+        }else if(category.equals(MyConstance.MY_FAV)){
+
+            mQuery = databaseReference.orderByChild(FAVORITES_ADS_PATH + "/" + myAuth.getUid() + "/" + USER_FAVORITES_ID).equalTo(myAuth.getUid());
+
+        }else {
+
             if(lastTime.equals("0")){
                 mQuery = databaseReference.orderByChild(ORDER_BY_CAT_TIME).startAt(category).endAt(category + "\uf8ff");
             }else {
                 mQuery = databaseReference.orderByChild(ORDER_BY_CAT_TIME).startAt(category).endAt(category + "\uf8ff");
             }
-            readDataUpdate();
-
 
         }
 
-    }
+        readDataUpdate();
 
+    }
 
     public void readDataUpdate() {
 
@@ -211,7 +223,6 @@ public class DbManager {
         }
 
     }
-
 
     public void updateTotalViews(final NewPost newPost) {
 
@@ -276,55 +287,6 @@ public class DbManager {
         databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
     }
 
-
-    public void getMyAdsDataFromDb(String uid) {
-
-        if(myAuth.getUid() == null) return;
-        if (newPostList.size() > 0) newPostList.clear();
-        DatabaseReference databaseReference = firebaseDatabase.getReference(MAIN_ADS_PATH);
-        //Query orders our announcements by uid
-        mQuery = databaseReference.orderByChild(myAuth.getUid() + "/Ads/uid").equalTo(uid);
-        readMyAdsDataUpdate();
-        categoryAdsCounter++;
-
-    }
-
-    public void readMyAdsDataUpdate() {
-
-
-        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-
-                    NewPost newPost = dataSnapshot.child(myAuth.getUid() + "/Ads").getValue(NewPost.class);
-
-                    StatusItem statusItem = dataSnapshot.child("status").getValue(StatusItem.class);
-                    if (newPost != null && statusItem != null) {
-
-                        newPost.setTotalViews(statusItem.totalViews);
-                        newPost.setTotalEmails(statusItem.totalEmails);
-                        newPost.setTotalCalls(statusItem.totalCalls);
-
-                    }
-
-                    newPostList.add(newPost);
-
-                }
-
-                dataSender.onDataRecived(newPostList);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
-
     public void updateFavorites(final NewPost newPost, PostAdapterRcView.AdsViewHolder holder) {
 
         if(newPost.isFav()){
@@ -379,21 +341,6 @@ public class DbManager {
 
 
     }
-
-    public void getMyFavoritesFromDb() {
-        if (myAuth.getUid() != null) {
-
-            //Log.d("MyLog", "getDataFromDb myAuth.getUid() != null" + myAuth.getUid());
-            DatabaseReference databaseReference = firebaseDatabase.getReference(MAIN_ADS_PATH);
-            //Query orders our announcements by time
-            mQuery = databaseReference.orderByChild(FAVORITES_ADS_PATH + "/" + myAuth.getUid() + "/" + USER_FAVORITES_ID).equalTo(myAuth.getUid());
-            readDataUpdate();
-
-
-        }
-
-    }
-
 
 }
 

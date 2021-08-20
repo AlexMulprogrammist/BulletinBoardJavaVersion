@@ -17,6 +17,10 @@
                 android:icon="@drawable/ic_fav_selected"
                 android:title="@string/my_favorites" />
             <item
+                android:id="@+id/id_all_ads"
+                android:icon="@drawable/ic_all_ads"
+                android:title="@string/all_ads" />
+            <item
                 android:id="@+id/id_cars"
                 android:icon="@drawable/ic_cars_ads"
                 android:title="@string/cars_ads" />

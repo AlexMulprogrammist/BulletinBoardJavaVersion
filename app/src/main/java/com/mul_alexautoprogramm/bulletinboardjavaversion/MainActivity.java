@@ -44,6 +44,7 @@ import com.mul_alexautoprogramm.bulletinboardjavaversion.DB.NewPost;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.accounthelper.AccountHelper;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.DataSender;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.adapters.PostAdapterRcView;
+import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DbManager dbManager;
     private DataSender dataSender;
     public static String MAUTH = "";
-    private String currentCategory = "Cars";
+    private String currentCategory = MyConstance.ALL_CAT;
     private final int EDIT_RESULT = 12;
     private AdView adView;
     private AccountHelper accountHelper;
@@ -97,17 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             adView.resume();
 
         }
-        Log.d("MyLog", "OnResume");
-        if (currentCategory.equals("my_ads")) {
-
-            dbManager.getMyAdsDataFromDb(mAuth.getUid());
-
-        } else {
-
-            dbManager.getDataFromDb(currentCategory, "0");
-
-        }
-
+        dbManager.getDataFromDb(currentCategory, "0");
 
     }
 
@@ -317,14 +308,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final int id_sign_in = R.id.id_sign_in;
         final int id_sign_out = R.id.id_sign_out;
         final int id_my_fav = R.id.id_my_fav;
+        final int id_all_ads = R.id.id_all_ads;
+
 
         switch (id) {
             case id_my_ads:
-                currentCategory = "my_ads";
-                dbManager.getMyAdsDataFromDb(mAuth.getUid());
+                currentCategory = MyConstance.MY_ADS;
+                dbManager.getDataFromDb(currentCategory, "0");
                 break;
             case id_my_fav:
-                dbManager.getMyFavoritesFromDb();
+                currentCategory = MyConstance.MY_FAV;
+                dbManager.getDataFromDb(currentCategory, "0");
+                break;
+            case id_all_ads:
+                currentCategory = MyConstance.ALL_CAT;
+                dbManager.getDataFromDb(currentCategory, "0");
                 break;
             case id_cars:
                 currentCategory = getResources().getStringArray(R.array.category_spinner)[0];
