@@ -142,6 +142,9 @@ public class AccountHelper {
     //signOut
     public void signOut() {
 
+        if(mAuth.getCurrentUser() == null) return;
+        if(mAuth.getCurrentUser().isAnonymous()) return;
+
         mAuth.signOut();
         googleSignInClient.signOut();
         mainActivity.getUserData();
@@ -269,4 +272,18 @@ public class AccountHelper {
 
         }
     }
+
+    public void signInAnonymous(){
+        mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    mainActivity.getUserData();
+                } else {
+                    Toast.makeText(mainActivity, R.string.error_register, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
 }

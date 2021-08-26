@@ -81,6 +81,8 @@
     <string name="my_favorites">Избранное</string>
     <string name="all_ads">Все обьявления</string>
     <string name="load_more">Загрузить ещё...</string>
+    <string name="guest">Гость</string>
+    <string name="error_register">Ошибка при регистрации, проверьте соединение с интернетом</string>
 
 
 </resources>

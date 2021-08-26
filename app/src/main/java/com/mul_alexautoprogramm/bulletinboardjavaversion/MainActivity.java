@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private GoogleSignInClient googleSignInClient;
     private ImageView imUserPhoto;
     public static final int GOOGLE_SIGN_IN_CODE = 10;
+    private MenuItem newAdItem;
 
 
     @Override
@@ -186,13 +187,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            userEmailTitleHeader.setText(currentUser.getEmail());
+
+            if(currentUser.isAnonymous()){
+                newAdItem.setVisible(false);
+                userEmailTitleHeader.setText(R.string.guest);
+
+            }else {
+                newAdItem.setVisible(true);
+                userEmailTitleHeader.setText(currentUser.getEmail());
+
+            }
+
             MAUTH = mAuth.getUid();
             onResume();
         } else {
-            userEmailTitleHeader.setText(R.string.signInOrSignUp);
-            MAUTH = "";
-            postAdapterRcView.clearAdapter();
+            accountHelper.signInAnonymous();
         }
 
     }
@@ -230,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //add button menu  in drawerLayout from activity_main
         toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.main_menu);
+        newAdItem = toolbar.getMenu().findItem(R.id.newAd);
         onToolbarItemClick();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.toggle_open, R.string.toggle_close);
@@ -390,14 +400,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         button_title_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (index == 0) {
-                    accountHelper.signUp(edEmail.getText().toString(), edPassword.getText().toString());
+                if(mAuth.getCurrentUser() != null){
 
-                } else {
-                    accountHelper.signIn(edEmail.getText().toString(), edPassword.getText().toString());
+                        if(mAuth.getCurrentUser().isAnonymous()) {
+                            mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        if(index == 0) accountHelper.signUp(edEmail.getText().toString(), edPassword.getText().toString());
+                                        else accountHelper.signIn(edEmail.getText().toString(), edPassword.getText().toString());
+                                    }
+                                }
+                            });
 
+                        }
 
-                }
+                    }
                 dialog.dismiss();
             }
         });
@@ -408,15 +426,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
 
                 if (mAuth.getCurrentUser() != null) {
+                    if(mAuth.getCurrentUser().isAnonymous()) {
+                        mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    accountHelper.signInUpGoogle(AccountHelper.GOOGLE_SIGN_IN_CODE);
+                                }
+                            }
+                        });
 
-                    Toast.makeText(MainActivity.this, "You are already signed in", Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                    return;
-
-                } else {
-
-                    accountHelper.signInUpGoogle(AccountHelper.GOOGLE_SIGN_IN_CODE);
-
+                    }
                 }
 
                 dialog.dismiss();

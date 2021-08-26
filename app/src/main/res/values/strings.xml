@@ -80,6 +80,8 @@
     <string name="my_favorites">Favorites</string>
     <string name="all_ads">All announcements</string>
     <string name="load_more">Load more...</string>
+    <string name="guest">Guest</string>
+    <string name="error_register">Registration error, check your internet connection</string>
 
 
 </resources>
