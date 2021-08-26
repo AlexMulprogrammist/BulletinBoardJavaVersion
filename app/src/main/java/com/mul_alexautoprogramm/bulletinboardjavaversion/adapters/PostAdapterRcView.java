@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,9 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
     private Context context;
     private onItemClickCustom onItemClickCustom;
     private DbManager dbManager;
+    private int myViewType = 0;
+    private int VIEW_TYPE_ADS = 0;
+    private int VIEW_TYPE_END_BUTTON = 1;
 
 
 
@@ -49,17 +53,40 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
     @NonNull
     @Override
     public AdsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_ads, parent, false);
+        View view;
+        if(viewType == VIEW_TYPE_END_BUTTON) {
+
+            view = LayoutInflater.from(context).inflate(R.layout.end_ads_item, parent, false);
+
+        }else {
+
+            view = LayoutInflater.from(context).inflate(R.layout.item_ads, parent, false);
+
+        }
+        Log.d("MyLog","Item type: " + viewType);
         return new AdsViewHolder(view, onItemClickCustom);
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull AdsViewHolder holder, int position) {
+        if(position == mainPostList.size() - 1 && (mainPostList.size() - 1) == MyConstance.ADS_LIMIT){
+            holder.setEndItemData();
+        }else {
+            holder.setData(mainPostList.get(position));
+            setFavIfSelected(holder);
+        }
 
-        holder.setData(mainPostList.get(position));
-        setFavIfSelected(holder);
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        if(mainPostList.get(position).getUid() == null){
+            myViewType = 1;
+        }else {
+            myViewType = 0;
+        }
+        return myViewType;
     }
 
     @Override
@@ -108,6 +135,7 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
     public void updateAdapter(List<NewPost> listData){
 
         mainPostList.clear();
+        if(listData.size() == MyConstance.ADS_LIMIT) listData.add(new NewPost());
         mainPostList.addAll(listData);
         notifyDataSetChanged();
 
@@ -156,6 +184,18 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
             itemView.setOnClickListener(this);
             this.onItemClickCustom = onItemClickCustom;
 
+        }
+
+        public void setEndItemData(){
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    dbManager.getDataFromDb(((MainActivity) context).currentCategory, mainPostList.get(mainPostList.size() - 2).getTime());
+                    ((MainActivity) context).rcView.scrollToPosition(0);
+
+                }
+            });
         }
 
         public void setData(NewPost newPost){

@@ -59,12 +59,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private AlertDialog dialog;
     private Toolbar toolbar;
     private PostAdapterRcView.onItemClickCustom onItemClickCustom;
-    private RecyclerView rcView;
+    public RecyclerView rcView;
     private PostAdapterRcView postAdapterRcView;
     private DbManager dbManager;
     private DataSender dataSender;
     public static String MAUTH = "";
-    private String currentCategory = MyConstance.ALL_CAT;
+    public String currentCategory = MyConstance.ALL_CAT;
     private final int EDIT_RESULT = 12;
     private AdView adView;
     private AccountHelper accountHelper;
@@ -254,11 +254,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 if(!rcView.canScrollVertically(1)){
 
-
-                   /* dbManager.getDataFromDb("Cars", postAdapterRcView.getMainList()
-                            .get(postAdapterRcView.getMainList().size() - 1)
-                            .getTime());
-                    rcView.scrollToPosition(0);*/
+//                    dbManager.getDataFromDb(currentCategory, postAdapterRcView.getMainList()
+//                            .get(postAdapterRcView.getMainList().size() - 1)
+//                            .getTime());
+//                    rcView.scrollToPosition(0);
 
                 }else if(!rcView.canScrollVertically(-1)){
 

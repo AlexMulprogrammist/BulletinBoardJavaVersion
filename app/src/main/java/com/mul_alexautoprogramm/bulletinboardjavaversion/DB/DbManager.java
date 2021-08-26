@@ -151,7 +151,11 @@ public class DbManager {
 
         if(category.equals(MyConstance.ALL_CAT)){
 
-            mQuery = databaseReference.orderByChild(ORDER_BY_TIME);
+            if(lastTime.equals("0")) {
+                mQuery = databaseReference.orderByChild(ORDER_BY_TIME).limitToLast(MyConstance.ADS_LIMIT);
+            }else {
+                mQuery = databaseReference.orderByChild(ORDER_BY_TIME).endAt(lastTime).limitToLast(MyConstance.ADS_LIMIT);
+            }
 
         }else if(category.equals(MyConstance.MY_ADS)){
 
@@ -238,6 +242,7 @@ public class DbManager {
         statusItem.totalViews = String.valueOf(total_views);
         statusItem.totalCalls = newPost.getTotalCalls();
         statusItem.totalEmails = newPost.getTotalEmails();
+        statusItem.filter_by_time = newPost.getTime();
         statusItem.cat_time = newPost.getCategory() + "_" + newPost.getTime();
 
         databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
@@ -260,6 +265,7 @@ public class DbManager {
         statusItem.totalEmails = String.valueOf(total_emails);
         statusItem.totalCalls = newPost.getTotalCalls();
         statusItem.totalViews = newPost.getTotalViews();
+        statusItem.filter_by_time = newPost.getTime();
         statusItem.cat_time = newPost.getCategory() + "_" + newPost.getTime();
 
         databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);
@@ -282,6 +288,7 @@ public class DbManager {
         statusItem.totalCalls = String.valueOf(total_calls);
         statusItem.totalEmails = newPost.getTotalEmails();
         statusItem.totalViews = newPost.getTotalViews();
+        statusItem.filter_by_time = newPost.getTime();
         statusItem.cat_time = newPost.getCategory() + "_" + newPost.getTime();
 
         databaseReference.child(newPost.getKey()).child("status").setValue(statusItem);

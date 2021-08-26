@@ -16,6 +16,7 @@ public class NewPost implements Serializable {
     private String totalViews = "0";
     private String totalEmails = "0";
     private String totalCalls = "0";
+
     private long favCounter = 0;
     private boolean isFav = false;
 
