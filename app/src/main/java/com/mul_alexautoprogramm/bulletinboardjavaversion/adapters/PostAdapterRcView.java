@@ -25,7 +25,6 @@ import com.mul_alexautoprogramm.bulletinboardjavaversion.ShowLayoutActivity;
 import com.mul_alexautoprogramm.bulletinboardjavaversion.utils.MyConstance;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.AdsViewHolder>{
@@ -37,6 +36,10 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
     private int myViewType = 0;
     private int VIEW_TYPE_ADS = 0;
     private int VIEW_TYPE_END_BUTTON = 1;
+    private boolean isStartPage = true;
+    private final int NEXT_ADS_BUTTON = 1;
+    private final int BACK_ADS_BUTTON = 2;
+    private int adsButtonState = 0;
 
 
 
@@ -70,9 +73,13 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
 
     @Override
     public void onBindViewHolder(@NonNull AdsViewHolder holder, int position) {
-        if(position == mainPostList.size() - 1 && (mainPostList.size() - 1) == MyConstance.ADS_LIMIT){
-            holder.setEndItemData();
-        }else {
+        int index = 1;
+        if(!isStartPage) index = 2;
+        if(position == mainPostList.size() - 1 && (mainPostList.size() - index) == MyConstance.ADS_LIMIT){
+            holder.setNextItemData();
+        }else if(position == 0 && !isStartPage){
+            holder.setBackItemData();
+        } else {
             holder.setData(mainPostList.get(position));
             setFavIfSelected(holder);
         }
@@ -135,10 +142,24 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
     public void updateAdapter(List<NewPost> listData){
 
         mainPostList.clear();
+        if(!isStartPage && listData.size() == MyConstance.ADS_LIMIT ||  adsButtonState == NEXT_ADS_BUTTON && !isStartPage) {
+            mainPostList.add(new NewPost());
+        }else if(!isStartPage && listData.size() < MyConstance.ADS_LIMIT && adsButtonState == BACK_ADS_BUTTON){
+
+            loadFirstPage();
+
+        }
+
         if(listData.size() == MyConstance.ADS_LIMIT) listData.add(new NewPost());
         mainPostList.addAll(listData);
         notifyDataSetChanged();
+        adsButtonState = 0;
 
+    }
+
+    private void loadFirstPage(){
+        dbManager.getDataFromDb(((MainActivity)context).currentCategory, "0");
+        isStartPage = true;
     }
 
     public void setDbManager(DbManager dbManager){
@@ -186,17 +207,31 @@ public class PostAdapterRcView extends RecyclerView.Adapter<PostAdapterRcView.Ad
 
         }
 
-        public void setEndItemData(){
+        public void setNextItemData(){
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     dbManager.getDataFromDb(((MainActivity) context).currentCategory, mainPostList.get(mainPostList.size() - 2).getTime());
                     ((MainActivity) context).rcView.scrollToPosition(0);
-
+                    isStartPage = false;
+                    adsButtonState = NEXT_ADS_BUTTON;
                 }
             });
         }
+
+        public void setBackItemData(){
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    dbManager.getBackDataFromDb(((MainActivity) context).currentCategory, mainPostList.get(1).getTime());
+                    ((MainActivity) context).rcView.scrollToPosition(0);
+                    adsButtonState = BACK_ADS_BUTTON;
+                }
+            });
+        }
+
 
         public void setData(NewPost newPost){
 

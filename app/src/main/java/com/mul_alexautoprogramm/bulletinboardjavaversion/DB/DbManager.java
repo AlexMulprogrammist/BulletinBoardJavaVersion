@@ -179,6 +179,37 @@ public class DbManager {
 
     }
 
+    public void getBackDataFromDb(String category, String lastTime) {
+
+        if (myAuth.getUid() == null)  return;
+        DatabaseReference databaseReference = firebaseDatabase.getReference(MAIN_ADS_PATH);
+
+        if(category.equals(MyConstance.ALL_CAT)){
+
+            mQuery = databaseReference.orderByChild(ORDER_BY_TIME).startAt(lastTime).limitToFirst(MyConstance.ADS_LIMIT);
+
+        }else if(category.equals(MyConstance.MY_ADS)){
+
+            mQuery = databaseReference.orderByChild(myAuth.getUid() + "/Ads/uid").equalTo(myAuth.getUid());
+
+        }else if(category.equals(MyConstance.MY_FAV)){
+
+            mQuery = databaseReference.orderByChild(FAVORITES_ADS_PATH + "/" + myAuth.getUid() + "/" + USER_FAVORITES_ID).equalTo(myAuth.getUid());
+
+        }else {
+
+            if(lastTime.equals("0")){
+                mQuery = databaseReference.orderByChild(ORDER_BY_CAT_TIME).startAt(category).endAt(category + "\uf8ff");
+            }else {
+                mQuery = databaseReference.orderByChild(ORDER_BY_CAT_TIME).startAt(category).endAt(category + "\uf8ff");
+            }
+
+        }
+
+        readDataUpdate();
+
+    }
+
     public void readDataUpdate() {
 
         if (myAuth.getUid() != null) {
